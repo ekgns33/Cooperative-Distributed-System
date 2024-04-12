@@ -108,6 +108,7 @@ public class Board extends JFrame {
             }
             if (curButtonIdx == 6 || curButtonIdx == 7) {
                 colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(false);
+                colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
                 colorPanel.setVisible(true);
             } else {
                 colorPanel.setVisible(false);
@@ -120,9 +121,11 @@ public class Board extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(true);
+            colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(null);
             for (int i = 0; i < colorButton.length; i++) {
                 if (e.getSource() == colorButton[i]) {
                     colorButton[i].setEnabled(false);
+                    colorButton[i].setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
                     if (curButtonIdx == 6)
                         curLineColor = i;
                     else
