@@ -4,9 +4,29 @@ import java.awt.event.*;
 
 public class Board extends JFrame {
     int curButtonIdx;
-    JButton[] button;
+    JButton[] button, colorButton;
+    JPanel colorPanel;
+    Color[] colorList = {
+            Color.BLACK,
+            Color.BLUE, Color.CYAN, Color.DARK_GRAY,
+            Color.GRAY,
+            Color.GREEN,
+            Color.LIGHT_GRAY,
+            Color.MAGENTA,
+            Color.ORANGE,
+            Color.PINK,
+            Color.RED,
+            Color.YELLOW
+    };
+    int curLineColor, curFillColor;
 
     public Board() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         setTitle("Shared Whiteboard");
         setSize(720, 480);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,6 +34,7 @@ public class Board extends JFrame {
 
         buttonInit();
         boardInit();
+        colorPanelInit();
     }
 
     private void buttonInit() {
@@ -58,17 +79,56 @@ public class Board extends JFrame {
         add(drawingPanel, BorderLayout.CENTER);
     }
 
+    private void colorPanelInit() {
+        colorPanel = new JPanel(new GridLayout(6, 2));
+        colorButton = new JButton[12];
+        curLineColor = curFillColor = 0;
+        ColorButtonListener colorButtonListener = new ColorButtonListener();
+        for (int i = 0; i < colorButton.length; i++) {
+            colorButton[i] = new JButton();
+            colorButton[i].setFocusPainted(false);
+            colorButton[i].setBackground(colorList[i]);
+            colorButton[i].addActionListener(colorButtonListener);
+            colorPanel.add(colorButton[i]);
+        }
+
+        add(colorPanel, BorderLayout.WEST);
+        colorPanel.setVisible(false);
+    }
+
     private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             button[curButtonIdx].setEnabled(true);
             for (int i = 0; i < 8; i++) {
-                if ((JButton) e.getSource() == button[i]) {
+                if (e.getSource() == button[i]) {
                     button[i].setEnabled(false);
                     curButtonIdx = i;
                 }
             }
+            if (curButtonIdx == 6 || curButtonIdx == 7) {
+                colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(false);
+                colorPanel.setVisible(true);
+            } else {
+                colorPanel.setVisible(false);
+            }
+        }
 
+    }
+
+    private class ColorButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(true);
+            for (int i = 0; i < colorButton.length; i++) {
+                if (e.getSource() == colorButton[i]) {
+                    colorButton[i].setEnabled(false);
+                    if (curButtonIdx == 6)
+                        curLineColor = i;
+                    else
+                        curFillColor = i;
+                }
+            }
         }
     }
 }
