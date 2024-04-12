@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Board extends JFrame {
-    private JPanel buttonPanel, drawingPanel;
 
     public Board() {
         setTitle("Shared Whiteboard");
@@ -16,7 +15,7 @@ public class Board extends JFrame {
     }
 
     private void buttonInit() {
-        buttonPanel = new JPanel(new GridLayout(1, 2));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
         JPanel figureModifyPanel = new JPanel(new GridLayout(2, 2));
 
@@ -42,7 +41,7 @@ public class Board extends JFrame {
     }
 
     private void boardInit(){
-        drawingPanel = new JPanel();
+        JPanel drawingPanel = new JPanel();
         drawingPanel.setBackground(Color.WHITE);
         add(drawingPanel, BorderLayout.CENTER);
     }
