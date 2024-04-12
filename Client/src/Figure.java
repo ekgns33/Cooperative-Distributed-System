@@ -8,7 +8,7 @@ public class Figure {
     Color drawColor;
     BigInteger id;
     float x, y, width, height, time, x2, y2;
-    string text;
+    String text;
     int size;
 
 }
