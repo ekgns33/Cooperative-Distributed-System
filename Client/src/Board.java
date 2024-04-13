@@ -7,16 +7,13 @@ public class Board extends JFrame {
     JButton[] button, colorButton;
     JPanel colorPanel;
     Color[] colorList = {
-            Color.BLACK,
-            Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY,
-            Color.GREEN,
-            Color.LIGHT_GRAY,
-            Color.MAGENTA,
-            Color.ORANGE,
-            Color.PINK,
-            Color.RED,
-            Color.YELLOW
+            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
+            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
+            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW
+    };
+    String[] buttonText = {
+            "원", "사각형", "선", "텍스트",
+            "선 굵기", "색 채우기", "선 색상", "채우기 색상"
     };
     int curLineColor, curFillColor;
 
@@ -44,17 +41,9 @@ public class Board extends JFrame {
 
         button = new JButton[8];
 
-        button[0] = new JButton("원");
-        button[1] = new JButton("사각형");
-        button[2] = new JButton("선");
-        button[3] = new JButton("텍스트");
-        button[4] = new JButton("선 굵기");
-        button[5] = new JButton("색 채우기");
-        button[6] = new JButton("선 색상");
-        button[7] = new JButton("채우기 색상");
-
         ButtonListener buttonListener = new ButtonListener();
         for (int i = 0; i < button.length; i++) {
+            button[i] = new JButton(buttonText[i]);
             button[i].addActionListener(buttonListener);
             button[i].setFocusPainted(false);
             if (i < 4) {
@@ -108,7 +97,7 @@ public class Board extends JFrame {
             }
             if (curButtonIdx == 6 || curButtonIdx == 7) {
                 colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(false);
-                colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
+                colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
                 colorPanel.setVisible(true);
             } else {
                 colorPanel.setVisible(false);
@@ -125,7 +114,7 @@ public class Board extends JFrame {
             for (int i = 0; i < colorButton.length; i++) {
                 if (e.getSource() == colorButton[i]) {
                     colorButton[i].setEnabled(false);
-                    colorButton[i].setBorder(BorderFactory.createLineBorder(Color.WHITE,3));
+                    colorButton[i].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
                     if (curButtonIdx == 6)
                         curLineColor = i;
                     else
