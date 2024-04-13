@@ -16,6 +16,8 @@ public class Board extends JFrame {
             "선 굵기", "색 채우기", "선 색상", "채우기 색상"
     };
     int curLineColor, curFillColor;
+    IDGenerator idGenerator;
+    int curID;
 
     public Board() {
         try {
@@ -32,6 +34,7 @@ public class Board extends JFrame {
         buttonInit();
         boardInit();
         colorPanelInit();
+        idGenerator = new IDGenerator();
     }
 
     private void buttonInit() {
