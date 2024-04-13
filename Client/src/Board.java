@@ -96,7 +96,9 @@ public class Board extends JFrame {
                 }
             }
             if (curButtonIdx == 6 || curButtonIdx == 7) {
+                colorButton[curButtonIdx == 6 ? curFillColor : curLineColor].setEnabled(true);
                 colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(false);
+                colorButton[curButtonIdx == 6 ? curFillColor : curLineColor].setBorder(null);
                 colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
                 colorPanel.setVisible(true);
             } else {
