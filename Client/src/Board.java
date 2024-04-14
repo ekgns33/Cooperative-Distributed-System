@@ -69,6 +69,14 @@ public class Board extends JFrame {
         JPanel drawingPanel = new JPanel();
         drawingPanel.setBackground(Color.WHITE);
         add(drawingPanel, BorderLayout.CENTER);
+
+        Timer timer = new Timer(1000 / 60, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawingPanel.repaint();
+            }
+        });
+        timer.start();
     }
 
     private void colorPanelInit() {
