@@ -3,25 +3,19 @@ import java.awt.*;
 public class Rect implements Figure {
     public int x, y, x2, y2;
     public Color lineColor, fillColor;
+    public long creationTime;
 
     public Rect(int x, int y, Color lineColor) {
         this.x = this.x2 = x;
         this.y = this.y2 = y;
         this.lineColor = lineColor;
         this.fillColor = null;
+        this.creationTime = System.currentTimeMillis();
     }
 
     @Override
-    public void setEndPoint(Point p){
-        this.x2 = p.x;
-        this.y2 = p.y;
-    }
-
-    public void fill(Color fillColor) {
-        if (this.fillColor != null)
-            this.fillColor = null;
-        else
-            this.fillColor = fillColor;
+    public long getCreationTime() {
+        return creationTime;
     }
 
     @Override
@@ -39,6 +33,19 @@ public class Rect implements Figure {
     }
 
     @Override
+    public void setEndPoint(Point p){
+        this.x2 = p.x;
+        this.y2 = p.y;
+    }
+
+    public void fill(Color fillColor) {
+        if (this.fillColor != null)
+            this.fillColor = null;
+        else
+            this.fillColor = fillColor;
+    }
+
+    @Override
     public boolean contains(Point p) {
         int minX = Math.min(x, x2);
         int minY = Math.min(y, y2);
@@ -49,5 +56,10 @@ public class Rect implements Figure {
         if(curX < 0 || width < curX)
             return false;
         return 0 <= curY && curY <= height;
+    }
+
+    @Override
+    public int compareTo(Figure other) {
+        return Long.compare(this.getCreationTime(), other.getCreationTime());
     }
 }
