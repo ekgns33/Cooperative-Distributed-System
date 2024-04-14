@@ -1,16 +1,20 @@
 import java.awt.*;
 
 public class Circle implements Figure {
-    public int x, y, width, height;
+    public int x, y, x2, y2;
     public Color lineColor, fillColor;
 
-    public Circle(int x, int y, int endX, int endY, Color lineColor) {
-        this.x = Math.min(x, endX);
-        this.y = Math.min(y, endY);
-        this.width = Math.abs(endX - x);
-        this.height = Math.abs(endY - y);
+    public Circle(int x, int y, Color lineColor) {
+        this.x = this.x2 = x;
+        this.y = this.y2 = y;
         this.lineColor = lineColor;
         this.fillColor = null;
+    }
+
+    @Override
+    public void setEndPoint(Point p) {
+        this.x2 = p.x;
+        this.y2 = p.y;
     }
 
     public void fill(Color fillColor) {
@@ -22,16 +26,26 @@ public class Circle implements Figure {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(fillColor);
-        g.fillOval(x, y, width, height);
+        int minX = Math.min(x, x2);
+        int minY = Math.min(y, y2);
+        int width = Math.abs(x2 - x);
+        int height = Math.abs(y2 - y);
+        if(fillColor != null) {
+            g.setColor(fillColor);
+            g.fillOval(minX, minY, width, height);
+        }
         g.setColor(lineColor);
-        g.drawOval(x, y, width, height);
+        g.drawOval(minX, minY, width, height);
     }
 
     @Override
     public boolean contains(Point p) {
-        int centerX = this.x + width / 2;
-        int centerY = this.y + height / 2;
+        int minX = Math.min(x, x2);
+        int minY = Math.min(y, y2);
+        int width = Math.abs(x2 - x);
+        int height = Math.abs(y2 - y);
+        int centerX = minX + width / 2;
+        int centerY = minY + height / 2;
         int a = width / 2;
         int b = height / 2;
         return Math.pow((p.x - centerX) / (double) a, 2) + Math.pow((p.y - centerY) / (double) b, 2) <= 1;
