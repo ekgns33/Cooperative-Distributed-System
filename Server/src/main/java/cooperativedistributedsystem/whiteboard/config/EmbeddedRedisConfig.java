@@ -1,4 +1,4 @@
-package cooperativedistributedsystem.whiteboard.global.config;
+package cooperativedistributedsystem.whiteboard.config;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
