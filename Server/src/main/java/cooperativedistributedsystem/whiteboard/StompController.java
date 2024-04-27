@@ -16,9 +16,13 @@ public class StompController {
 
     @MessageMapping("/pub")
     public void sendMessage(Message message) {
-        if (message.isEnter()) {
+        if (message.getStatus() == 1) {
             log.info("New user enter!!");
-            sendingOperations.convertAndSend("/room", "enter user");
+            sendingOperations.convertAndSend("/room", "enter " + message.getNickname());
+        }
+        else if (message.getStatus() == 2) {
+            log.info("user out!!");
+            sendingOperations.convertAndSend("/room", "out " + message.getNickname());
         }
         else {
             log.info("{}", message);

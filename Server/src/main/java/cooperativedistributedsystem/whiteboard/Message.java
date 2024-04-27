@@ -9,7 +9,8 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Message {
-    boolean enter; // 새로 들어온 유저?
+    int status; // 1: 입장, 2: 퇴장, 3: 메시지
+    String nickname; // 유저 닉네임
 
     int type; // 도형 종류
     long time; // 생성 시간
@@ -39,7 +40,7 @@ public class Message {
 
 /*
 {
-    "isEnter":false,
+    "enter":false,
     "type":1,
     "time":123,
     "id":1,

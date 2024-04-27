@@ -1,6 +1,6 @@
 package cooperativedistributedsystem.whiteboard;
 
-import java.util.List;
+import java.util.Set;
 
-public record EnterResponse(List<Message> messages, long startId) {
+public record EnterResponse(Set<Message> messages, long startId) {
 }
