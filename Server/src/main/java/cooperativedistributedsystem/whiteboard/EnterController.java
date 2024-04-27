@@ -15,10 +15,8 @@ public class EnterController {
     private final long interval = 1024L;
 
     @GetMapping
-    public EnterResponse enter() {
-        Set<Message> all = messageRepository.findAll();
-        long startId = getObjectStartId();
-        return new EnterResponse(all, startId);
+    public Set<Message> enter() {
+        return messageRepository.findAll();
     }
 
     @GetMapping("id")
