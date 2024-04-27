@@ -1,5 +1,6 @@
 package cooperativedistributedsystem.whiteboard;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -13,13 +14,19 @@ import java.util.Set;
 public class MessageRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final String key = "chatroom";
 
-    public void save(Message message) {
-        redisTemplate.opsForList().rightPush("chatroom", message);
+    @PostConstruct
+    public void deleteAll() {
+        redisTemplate.opsForList().getOperations().delete(key);
     }
 
-    public List<Message> findAll() {
-        List<Message> chatroom = redisTemplate.opsForList().range("chatroom", 0, -1).reversed().stream()
+    public void save(Message message) {
+        redisTemplate.opsForList().rightPush(key, message);
+    }
+
+    public Set<Message> findAll() {
+        List<Message> chatroom = redisTemplate.opsForList().range(key, 0, -1).reversed().stream()
                 .map(o -> (Message) o)
                 .toList();
 
@@ -27,9 +34,7 @@ public class MessageRepository {
         for (int i = chatroom.size() - 1; i >= 0; i--) {
             chatroomSet.add(chatroom.get(i));
         }
-        return chatroomSet.stream()
-                .sorted((o1, o2) -> (int) (o1.getTime() - o2.getTime()))
-                .toList();
+        return chatroomSet;
     }
 
 }
