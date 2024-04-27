@@ -16,9 +16,9 @@ public class Board extends JFrame {
     };
     String[] buttonText = {
             "원", "사각형", "선", "텍스트",
-            "선 굵기", "색 채우기", "선 색상", "채우기 색상"
+            "선 굵기", "선 색상", "색 채우기"
     };
-    int curLineColor, curFillColor;
+    int curColorIdx;
     IDGenerator idGenerator;
     HashMap<Integer, Figure> figureMap;
     Queue<Figure> figures;
@@ -37,9 +37,9 @@ public class Board extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        colorPanelInit();
         buttonInit();
         boardInit();
-        colorPanelInit();
         idGenerator = new IDGenerator();
         figureMap = new HashMap<>();
         figures = new PriorityQueue<>();
@@ -47,10 +47,11 @@ public class Board extends JFrame {
 
     private void buttonInit() {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+        JPanel figurePanel = new JPanel(new GridLayout(1, 2));
         JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
-        JPanel figureModifyPanel = new JPanel(new GridLayout(2, 2));
+        JPanel figureModifyPanel = new JPanel(new GridLayout(1, 3));
 
-        button = new JButton[8];
+        button = new JButton[buttonText.length];
 
         ButtonListener buttonListener = new ButtonListener();
         for (int i = 0; i < button.length; i++) {
@@ -67,8 +68,11 @@ public class Board extends JFrame {
         curButtonIdx = 0;
         button[curButtonIdx].setEnabled(false);
 
-        buttonPanel.add(figureTypePanel);
-        buttonPanel.add(figureModifyPanel);
+        figurePanel.add(figureTypePanel);
+        figurePanel.add(figureModifyPanel);
+
+        buttonPanel.add(figurePanel);
+        buttonPanel.add(colorPanel);
 
         add(buttonPanel, BorderLayout.NORTH);
     }
@@ -92,19 +96,19 @@ public class Board extends JFrame {
             public void mousePressed(MouseEvent e) {
                 try {
                     if (curButtonIdx == 0) {
-                        curFigure = new Circle(e.getX(), e.getY(), curStrokeWidth, colorList[curLineColor]);
+                        curFigure = new Circle(e.getX(), e.getY(), curStrokeWidth, colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 1) {
-                        curFigure = new Rect(e.getX(), e.getY(), curStrokeWidth, colorList[curLineColor]);
+                        curFigure = new Rect(e.getX(), e.getY(), curStrokeWidth, colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 2) {
-                        curFigure = new Line(e.getX(), e.getY(), curStrokeWidth, colorList[curLineColor]);
+                        curFigure = new Line(e.getX(), e.getY(), curStrokeWidth, colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 3) {
-                        curFigure = new Text(e.getX(), e.getY(), colorList[curLineColor]);
+                        curFigure = new Text(e.getX(), e.getY(), colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else {
@@ -114,8 +118,14 @@ public class Board extends JFrame {
                                 curFigure = figure;
                             }
                         }
-                        if (curFigure != null && curButtonIdx == 5) {
-                            curFigure.setFillColor(colorList[curFillColor]);
+                        if (curFigure == null) {
+                            // Do nothing
+                        } else if (curButtonIdx == 4) {
+                            // Line width
+                        } else if (curButtonIdx == 5) {
+                            curFigure.setLineColor(colorList[curColorIdx]);
+                        } else if (curButtonIdx == 6) {
+                            curFigure.setFillColor(colorList[curColorIdx]);
                         }
                         curFigure = null;
                     }
@@ -126,9 +136,9 @@ public class Board extends JFrame {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if(curButtonIdx == 3) {
+                if (curButtonIdx == 3) {
                     String inputText = JOptionPane.showInputDialog("텍스트를 입력하세요:");
-                    if(inputText == null) {
+                    if (inputText == null) {
                         inputText = "";
                     }
                     Text textFigure = (Text) curFigure;
@@ -160,9 +170,9 @@ public class Board extends JFrame {
     }
 
     private void colorPanelInit() {
-        colorPanel = new JPanel(new GridLayout(6, 2));
+        colorPanel = new JPanel(new GridLayout(2, 6));
         colorButton = new JButton[12];
-        curLineColor = curFillColor = 0;
+        curColorIdx = 0;
         ColorButtonListener colorButtonListener = new ColorButtonListener();
         for (int i = 0; i < colorButton.length; i++) {
             colorButton[i] = new JButton();
@@ -171,29 +181,19 @@ public class Board extends JFrame {
             colorButton[i].addActionListener(colorButtonListener);
             colorPanel.add(colorButton[i]);
         }
-
-        add(colorPanel, BorderLayout.WEST);
-        colorPanel.setVisible(false);
+        colorButton[curColorIdx].setEnabled(false);
+        colorButton[curColorIdx].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
     }
 
     private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             button[curButtonIdx].setEnabled(true);
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < button.length; i++) {
                 if (e.getSource() == button[i]) {
                     button[i].setEnabled(false);
                     curButtonIdx = i;
                 }
-            }
-            if (curButtonIdx == 6 || curButtonIdx == 7) {
-                colorButton[curButtonIdx == 6 ? curFillColor : curLineColor].setEnabled(true);
-                colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(false);
-                colorButton[curButtonIdx == 6 ? curFillColor : curLineColor].setBorder(null);
-                colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-                colorPanel.setVisible(true);
-            } else {
-                colorPanel.setVisible(false);
             }
         }
 
@@ -202,16 +202,13 @@ public class Board extends JFrame {
     private class ColorButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setEnabled(true);
-            colorButton[curButtonIdx == 6 ? curLineColor : curFillColor].setBorder(null);
+            colorButton[curColorIdx].setEnabled(true);
+            colorButton[curColorIdx].setBorder(null);
             for (int i = 0; i < colorButton.length; i++) {
                 if (e.getSource() == colorButton[i]) {
                     colorButton[i].setEnabled(false);
                     colorButton[i].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-                    if (curButtonIdx == 6)
-                        curLineColor = i;
-                    else
-                        curFillColor = i;
+                    curColorIdx = i;
                 }
             }
         }
