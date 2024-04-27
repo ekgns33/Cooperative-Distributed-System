@@ -58,15 +58,8 @@ public class Rect implements Figure {
 
     @Override
     public boolean contains(Point p) {
-        int minX = Math.min(x, x2);
-        int minY = Math.min(y, y2);
-        int width = Math.abs(x2 - x);
-        int height = Math.abs(y2 - y);
-        int curX = p.x - minX;
-        int curY = p.y - minY;
-        if (curX < 0 || width < curX)
-            return false;
-        return 0 <= curY && curY <= height;
+        Rectangle rectBounds = new Rectangle(Math.min(x, x2), Math.min(y, y2), Math.abs(x2 - x),  Math.abs(y2 - y));
+        return rectBounds.contains(p);
     }
 
     @Override
