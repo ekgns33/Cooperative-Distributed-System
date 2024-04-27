@@ -23,7 +23,7 @@ public class Login extends JFrame {
         loginButton.addActionListener(e -> {
             String id = idField.getText();
             if (Login.this.authenticate(ipField.getText())) {
-                Board board = new Board(idField.getText());
+                Board board = new Board(idField.getText(), ipField.getText());
                 board.setVisible(true);
                 Login.this.dispose();
             } else {

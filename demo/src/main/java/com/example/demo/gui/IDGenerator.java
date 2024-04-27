@@ -1,29 +1,46 @@
 package com.example.demo.gui;
 
+import com.example.demo.stomp_client.EnterService;
+
+import java.io.IOException;
 import java.util.concurrent.*;
 
 public class IDGenerator {
     int curID, nextID;
+    String ip;
+    EnterService enterService;
 
-    public IDGenerator() {
-        // TODO: get ID from server
-        curID = 0;
-        nextID = 0;
+    public IDGenerator(String ip) throws IOException, InterruptedException {
+        this.ip = ip;
+        this.enterService = new EnterService();
+        curID = enterService.reissueId(ip);
+        nextID = -1;
+        System.out.println("cur ID:" + curID);
+        System.out.println("next ID:" + nextID);
     }
 
-    public synchronized int getID() {
+    public synchronized int getID() throws RuntimeException {
         int ret = curID;
+        if(ret == -1)
+            throw new RuntimeException();
         curID += 1;
         if ((curID & 1023) == 896)
             getNextID();
-        if ((curID & 1023) == 0)
+        if ((curID & 1023) == 0) {
             curID = nextID;
+            nextID = -1;
+        }
         return ret;
     }
 
-    private void getNextID() {
+    private void getNextID(){
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            nextID += 1024;
+            while(nextID == -1) {
+                try {
+                    nextID = enterService.reissueId(ip);
+                }catch (Exception ignored) {
+                }
+            }
         });
     }
 }

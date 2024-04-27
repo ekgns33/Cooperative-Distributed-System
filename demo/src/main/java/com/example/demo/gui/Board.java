@@ -1,5 +1,6 @@
 package com.example.demo.gui;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.demo.Message;
 import com.example.demo.stomp_client.StompClient;
 
@@ -31,7 +32,7 @@ public class Board extends JFrame {
     Figure curFigure;
     int curID, curLineWidth = 1;
 
-    public Board(String id) {
+    public Board(String id, String ip) {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         } catch (Exception e) {
@@ -52,7 +53,14 @@ public class Board extends JFrame {
         colorPanelInit();
         buttonInit();
         boardInit();
-        idGenerator = new IDGenerator();
+        try {
+            idGenerator = new IDGenerator(ip);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred while initializing IDGenerator: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
         figureMap = new HashMap<>();
         figures = new PriorityQueue<>();
 
@@ -157,6 +165,11 @@ public class Board extends JFrame {
                         }
                     }
                 } catch (NullPointerException err) {
+                    err.printStackTrace();
+                } catch (Exception err) {
+                    JOptionPane.showMessageDialog(drawingPanel,
+                            "Error occurred while initializing IDGenerator: " + err.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
                     err.printStackTrace();
                 }
             }
