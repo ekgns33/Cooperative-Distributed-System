@@ -8,10 +8,7 @@ import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.*;
 
 public class Board extends JFrame {
@@ -44,6 +41,12 @@ public class Board extends JFrame {
         setTitle("Shared Whiteboard");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                StompClient.send(Message.exitRoom(id));
+            }
+        });
         setLocationRelativeTo(null);
 
         colorPanelInit();
