@@ -1,14 +1,14 @@
 import java.awt.*;
 
 public class Circle implements Figure {
-    public int x, y, x2, y2, strokeWidth;
+    public int x, y, x2, y2, lineWidth;
     public Color lineColor, fillColor;
     public long creationTime;
 
-    public Circle(int x, int y, int strokeWidth, Color lineColor) {
+    public Circle(int x, int y, int lineWidth, Color lineColor) {
         this.x = this.x2 = x;
         this.y = this.y2 = y;
-        this.strokeWidth = strokeWidth;
+        this.lineWidth = lineWidth;
         this.lineColor = lineColor;
         this.fillColor = null;
         this.creationTime = System.currentTimeMillis();
@@ -27,7 +27,7 @@ public class Circle implements Figure {
         int height = Math.abs(y2 - y);
 
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(strokeWidth));
+        g2d.setStroke(new BasicStroke(lineWidth));
 
         if (fillColor != null) {
             g.setColor(fillColor);
@@ -44,16 +44,21 @@ public class Circle implements Figure {
     }
 
     @Override
-    public void setFillColor(Color fillColor) {
-        if (this.fillColor == fillColor)
-            this.fillColor = null;
-        else
-            this.fillColor = fillColor;
+    public void setLineWidth(int lineWidth) {
+        this.lineWidth = lineWidth;
     }
 
     @Override
     public void setLineColor(Color lineColor) {
         this.lineColor = lineColor;
+    }
+
+    @Override
+    public void setFillColor(Color fillColor) {
+        if (this.fillColor == fillColor)
+            this.fillColor = null;
+        else
+            this.fillColor = fillColor;
     }
 
     @Override

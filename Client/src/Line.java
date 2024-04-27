@@ -1,15 +1,14 @@
 import java.awt.*;
 
 public class Line implements Figure {
-    public int x, y, x2, y2;
+    public int x, y, x2, y2, lineWidth;
     public Color lineColor;
     public long creationTime;
-    int strokeWidth;
 
-    public Line(int x, int y, int strokeWidth, Color lineColor) {
+    public Line(int x, int y, int lineWidth, Color lineColor) {
         this.x = this.x2 = x;
         this.y = this.y2 = y;
-        this.strokeWidth = strokeWidth;
+        this.lineWidth = lineWidth;
         this.lineColor = lineColor;
         this.creationTime = System.currentTimeMillis();
     }
@@ -22,7 +21,7 @@ public class Line implements Figure {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(strokeWidth));
+        g2d.setStroke(new BasicStroke(lineWidth));
 
         g.setColor(lineColor);
         g.drawLine(x, y, x2, y2);
@@ -35,8 +34,8 @@ public class Line implements Figure {
     }
 
     @Override
-    public void setFillColor(Color fillColor) {
-        // Do nothing
+    public void setLineWidth(int lineWidth) {
+        this.lineWidth = lineWidth;
     }
 
     @Override
@@ -44,11 +43,16 @@ public class Line implements Figure {
         this.lineColor = lineColor;
     }
 
+    @Override
+    public void setFillColor(Color fillColor) {
+        // Do nothing
+    }
+
     public boolean contains(Point p) {
         if (p.x < Math.min(x, x2) || p.x > Math.max(x, x2) || p.y < Math.min(y, y2) || p.y > Math.max(y, y2))
             return false;
         double distance = Math.abs((x2 - x) * (y - p.y) - (x - p.x) * (y2 - y)) / Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
-        return distance <= strokeWidth;
+        return distance <= lineWidth;
     }
 
     @Override

@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Login extends JFrame {
     private JTextField idField;
@@ -6,7 +8,6 @@ public class Login extends JFrame {
     private JButton loginButton;
 
     public Login() {
-        // 로그인 창 초기화 코드 추가
         setTitle("로그인");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -16,15 +17,14 @@ public class Login extends JFrame {
         ipField = new JTextField(20);
         loginButton = new JButton("로그인");
 
-        // 로그인 버튼에 액션 리스너 추가
         loginButton.addActionListener(e -> {
             String id = idField.getText();
-            if (authenticate()) {
+            if (Login.this.authenticate()) {
                 Board board = new Board();
                 board.setVisible(true);
-                dispose(); // 로그인 창 닫기
+                Login.this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "error");
+                JOptionPane.showMessageDialog(Login.this, "error");
             }
         });
 

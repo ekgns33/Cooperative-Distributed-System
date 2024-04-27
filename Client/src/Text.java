@@ -47,13 +47,19 @@ public class Text implements Figure {
     }
 
     @Override
-    public void setFillColor(Color fillColor) {
+    public void setLineWidth(int lineWidth) {
         // Do nothing
     }
+
 
     @Override
     public void setLineColor(Color lineColor) {
         this.lineColor = lineColor;
+    }
+
+    @Override
+    public void setFillColor(Color fillColor) {
+        // Do nothing
     }
 
     @Override

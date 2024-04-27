@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class Board extends JFrame {
     HashMap<Integer, Figure> figureMap;
     Queue<Figure> figures;
     Figure curFigure;
-    int curID, curStrokeWidth = 2;
+    int curID, curLineWidth = 1;
 
     public Board() {
         try {
@@ -49,6 +50,8 @@ public class Board extends JFrame {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
         JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
         JPanel figureModifyPanel = new JPanel(new GridLayout(1, 3));
+        JPanel figureValuePanel = new JPanel(new GridLayout(2, 1));
+
 
         button = new JButton[buttonText.length];
 
@@ -67,9 +70,20 @@ public class Board extends JFrame {
         curButtonIdx = 0;
         button[curButtonIdx].setEnabled(false);
 
+        JSlider slider;
+        slider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
+        slider.setMajorTickSpacing(1);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.addChangeListener(new SliderListener());
+
+        figureValuePanel.add(colorPanel);
+        figureValuePanel.add(slider);
+
         buttonPanel.add(figureTypePanel);
         buttonPanel.add(figureModifyPanel);
-        buttonPanel.add(colorPanel);
+        buttonPanel.add(figureValuePanel);
 
         add(buttonPanel, BorderLayout.NORTH);
     }
@@ -93,15 +107,15 @@ public class Board extends JFrame {
             public void mousePressed(MouseEvent e) {
                 try {
                     if (curButtonIdx == 0) {
-                        curFigure = new Circle(e.getX(), e.getY(), curStrokeWidth, colorList[curColorIdx]);
+                        curFigure = new Circle(e.getX(), e.getY(), curLineWidth, colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 1) {
-                        curFigure = new Rect(e.getX(), e.getY(), curStrokeWidth, colorList[curColorIdx]);
+                        curFigure = new Rect(e.getX(), e.getY(), curLineWidth, colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 2) {
-                        curFigure = new Line(e.getX(), e.getY(), curStrokeWidth, colorList[curColorIdx]);
+                        curFigure = new Line(e.getX(), e.getY(), curLineWidth, colorList[curColorIdx]);
                         figureMap.put(idGenerator.getID(), curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 3) {
@@ -118,7 +132,7 @@ public class Board extends JFrame {
                         if (curFigure == null) {
                             // Do nothing
                         } else if (curButtonIdx == 4) {
-                            // Line width
+                            curFigure.setLineWidth(curLineWidth);
                         } else if (curButtonIdx == 5) {
                             curFigure.setLineColor(colorList[curColorIdx]);
                         } else if (curButtonIdx == 6) {
@@ -193,7 +207,6 @@ public class Board extends JFrame {
                 }
             }
         }
-
     }
 
     private class ColorButtonListener implements ActionListener {
@@ -208,6 +221,14 @@ public class Board extends JFrame {
                     curColorIdx = i;
                 }
             }
+        }
+    }
+
+    private class SliderListener implements ChangeListener {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JSlider source = (JSlider) e.getSource();
+            curLineWidth = source.getValue();
         }
     }
 }
