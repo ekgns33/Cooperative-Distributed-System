@@ -26,7 +26,7 @@ public class MessageRepository {
     }
 
     public Set<Message> findAll() {
-        List<Message> chatroom = redisTemplate.opsForList().range(key, 0, -1).reversed().stream()
+        List<Message> chatroom = redisTemplate.opsForList().range(key, 0, -1).stream()
                 .map(o -> (Message) o)
                 .toList();
 
