@@ -46,8 +46,7 @@ public class Board extends JFrame {
     }
 
     private void buttonInit() {
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-        JPanel figurePanel = new JPanel(new GridLayout(1, 2));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
         JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
         JPanel figureModifyPanel = new JPanel(new GridLayout(1, 3));
 
@@ -68,10 +67,8 @@ public class Board extends JFrame {
         curButtonIdx = 0;
         button[curButtonIdx].setEnabled(false);
 
-        figurePanel.add(figureTypePanel);
-        figurePanel.add(figureModifyPanel);
-
-        buttonPanel.add(figurePanel);
+        buttonPanel.add(figureTypePanel);
+        buttonPanel.add(figureModifyPanel);
         buttonPanel.add(colorPanel);
 
         add(buttonPanel, BorderLayout.NORTH);
