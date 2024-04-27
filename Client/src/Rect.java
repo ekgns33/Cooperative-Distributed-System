@@ -1,13 +1,14 @@
 import java.awt.*;
 
 public class Rect implements Figure {
-    public int x, y, x2, y2;
+    public int x, y, x2, y2, strokeWidth;
     public Color lineColor, fillColor;
     public long creationTime;
 
-    public Rect(int x, int y, Color lineColor) {
+    public Rect(int x, int y, int strokeWidth, Color lineColor) {
         this.x = this.x2 = x;
         this.y = this.y2 = y;
+        this.strokeWidth = strokeWidth;
         this.lineColor = lineColor;
         this.fillColor = null;
         this.creationTime = System.currentTimeMillis();
@@ -24,7 +25,11 @@ public class Rect implements Figure {
         int minY = Math.min(y, y2);
         int width = Math.abs(x2 - x);
         int height = Math.abs(y2 - y);
-        if(fillColor != null) {
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(strokeWidth));
+
+        if (fillColor != null) {
             g.setColor(fillColor);
             g.fillRect(minX, minY, width, height);
         }
@@ -33,7 +38,7 @@ public class Rect implements Figure {
     }
 
     @Override
-    public void setEndPoint(Point p){
+    public void setEndPoint(Point p) {
         this.x2 = p.x;
         this.y2 = p.y;
     }
@@ -53,7 +58,7 @@ public class Rect implements Figure {
         int height = Math.abs(y2 - y);
         int curX = p.x - minX;
         int curY = p.y - minY;
-        if(curX < 0 || width < curX)
+        if (curX < 0 || width < curX)
             return false;
         return 0 <= curY && curY <= height;
     }

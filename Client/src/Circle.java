@@ -1,13 +1,14 @@
 import java.awt.*;
 
 public class Circle implements Figure {
-    public int x, y, x2, y2;
+    public int x, y, x2, y2, strokeWidth;
     public Color lineColor, fillColor;
     public long creationTime;
 
-    public Circle(int x, int y, Color lineColor) {
+    public Circle(int x, int y, int strokeWidth, Color lineColor) {
         this.x = this.x2 = x;
         this.y = this.y2 = y;
+        this.strokeWidth = strokeWidth;
         this.lineColor = lineColor;
         this.fillColor = null;
         this.creationTime = System.currentTimeMillis();
@@ -24,14 +25,14 @@ public class Circle implements Figure {
         int minY = Math.min(y, y2);
         int width = Math.abs(x2 - x);
         int height = Math.abs(y2 - y);
-        if(fillColor != null) {
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(strokeWidth));
+
+        if (fillColor != null) {
             g.setColor(fillColor);
             g.fillOval(minX, minY, width, height);
         }
-//        float strokeWidth = 3.0f;
-//        Graphics2D g2d = (Graphics2D) g;
-//        g2d.setStroke(new BasicStroke(strokeWidth));
-
         g.setColor(lineColor);
         g.drawOval(minX, minY, width, height);
     }
