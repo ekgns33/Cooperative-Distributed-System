@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Board extends JFrame {
     int curButtonIdx;
@@ -17,7 +20,10 @@ public class Board extends JFrame {
     };
     int curLineColor, curFillColor;
     IDGenerator idGenerator;
-    int curID;
+    HashMap<Integer, Figure> figureMap;
+    Queue<Figure> figures;
+    Figure curFigure;
+    int curID, curStrokeWidth = 2;
 
     public Board() {
         try {
@@ -27,7 +33,7 @@ public class Board extends JFrame {
         }
 
         setTitle("Shared Whiteboard");
-        setSize(720, 480);
+        setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -35,6 +41,8 @@ public class Board extends JFrame {
         boardInit();
         colorPanelInit();
         idGenerator = new IDGenerator();
+        figureMap = new HashMap<>();
+        figures = new PriorityQueue<>();
     }
 
     private void buttonInit() {
@@ -66,9 +74,81 @@ public class Board extends JFrame {
     }
 
     private void boardInit() {
-        JPanel drawingPanel = new JPanel();
+        JPanel drawingPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                for (Figure figure : figures) {
+                    figure.draw(g);
+                }
+            }
+        };
+        drawingPanel.setPreferredSize(new Dimension(720, 480));
         drawingPanel.setBackground(Color.WHITE);
         add(drawingPanel, BorderLayout.CENTER);
+
+        drawingPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    if (curButtonIdx == 0) {
+                        curFigure = new Circle(e.getX(), e.getY(), curStrokeWidth, colorList[curLineColor]);
+                        figureMap.put(idGenerator.getID(), curFigure);
+                        figures.add(curFigure);
+                    } else if (curButtonIdx == 1) {
+                        curFigure = new Rect(e.getX(), e.getY(), curStrokeWidth, colorList[curLineColor]);
+                        figureMap.put(idGenerator.getID(), curFigure);
+                        figures.add(curFigure);
+                    } else if (curButtonIdx == 2) {
+                        curFigure = new Line(e.getX(), e.getY(), curStrokeWidth, colorList[curLineColor]);
+                        figureMap.put(idGenerator.getID(), curFigure);
+                        figures.add(curFigure);
+                    } else if (curButtonIdx == 3) {
+                        curFigure = new Text(e.getX(), e.getY(), colorList[curLineColor]);
+                        figureMap.put(idGenerator.getID(), curFigure);
+                        figures.add(curFigure);
+                    } else {
+                        curFigure = null;
+                        for (Figure figure : figures) {
+                            if (figure.contains(e.getPoint())) {
+                                curFigure = figure;
+                            }
+                        }
+                        if (curFigure != null && curButtonIdx == 5) {
+                            curFigure.setFillColor(colorList[curFillColor]);
+                        }
+                        curFigure = null;
+                    }
+                } catch (NullPointerException err) {
+                    err.printStackTrace();
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if(curButtonIdx == 3) {
+                    String inputText = JOptionPane.showInputDialog("텍스트를 입력하세요:");
+                    if(inputText == null) {
+                        inputText = "";
+                    }
+                    Text textFigure = (Text) curFigure;
+                    textFigure.setText(inputText);
+                    textFigure.isDrawing = false;
+                }
+                if (curButtonIdx < 4) {
+                    curFigure = null;
+                }
+            }
+        });
+
+        drawingPanel.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (curButtonIdx < 4) {
+                    curFigure.setEndPoint(e.getPoint());
+                }
+            }
+        });
 
         Timer timer = new Timer(1000 / 60, new ActionListener() {
             @Override
