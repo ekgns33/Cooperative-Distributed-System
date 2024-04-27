@@ -39,7 +39,7 @@ public class Rect implements Figure {
     }
 
     public void fill(Color fillColor) {
-        if (this.fillColor != null)
+        if (this.fillColor == fillColor)
             this.fillColor = null;
         else
             this.fillColor = fillColor;

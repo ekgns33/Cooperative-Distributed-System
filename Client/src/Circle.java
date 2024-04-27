@@ -28,6 +28,10 @@ public class Circle implements Figure {
             g.setColor(fillColor);
             g.fillOval(minX, minY, width, height);
         }
+//        float strokeWidth = 3.0f;
+//        Graphics2D g2d = (Graphics2D) g;
+//        g2d.setStroke(new BasicStroke(strokeWidth));
+
         g.setColor(lineColor);
         g.drawOval(minX, minY, width, height);
     }
@@ -39,7 +43,7 @@ public class Circle implements Figure {
     }
 
     public void fill(Color fillColor) {
-        if (this.fillColor != null)
+        if (this.fillColor == fillColor)
             this.fillColor = null;
         else
             this.fillColor = fillColor;
