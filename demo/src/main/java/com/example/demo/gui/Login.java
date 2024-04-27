@@ -10,7 +10,7 @@ public class Login extends JFrame {
     private JTextField ipField;
     private JButton loginButton;
 
-    public Login() throws ExecutionException, InterruptedException {
+    public Login() {
         setTitle("로그인");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,13 +22,12 @@ public class Login extends JFrame {
 
         loginButton.addActionListener(e -> {
             String id = idField.getText();
-            if (Login.this.authenticate()) {
-                Board board = new Board();
+            if (Login.this.authenticate(ipField.getText())) {
+                Board board = new Board(idField.getText());
                 board.setVisible(true);
                 Login.this.dispose();
-            }
-            else {
-                JOptionPane.showMessageDialog(Login.this, "error");
+            } else {
+                JOptionPane.showMessageDialog(Login.this, "로그인 실패");
             }
         });
 
@@ -38,14 +37,16 @@ public class Login extends JFrame {
         add(ipField);
         add(loginButton);
 
-        String id = idField.getText();
-        String ip = ipField.getText();
-        StompClient.connect(ip, id);
-
         setLocationRelativeTo(null);
     }
 
-    private boolean authenticate() {
+    private boolean authenticate(String ip) {
+        try {
+            StompClient.connect(ip);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 }

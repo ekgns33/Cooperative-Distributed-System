@@ -13,7 +13,7 @@ public class ClientWebSocketStompConfig {
     public static StompSession getWebSocketStompClient(String url) throws ExecutionException, InterruptedException {
         WebSocketStompClient webSocketClient = new WebSocketStompClient(new StandardWebSocketClient());
         webSocketClient.setMessageConverter(new MappingJackson2MessageConverter());
-        StompSessionHandler stompSessionHandler = new ClientWebSocketStompSessionHandler();
+        StompSessionHandler stompSessionHandler = new ClientWebSocketStompSessionHandler(null, null);
 
         Object[] urlVariables = {};
         return webSocketClient.connect(url, null, null, stompSessionHandler, urlVariables).get();

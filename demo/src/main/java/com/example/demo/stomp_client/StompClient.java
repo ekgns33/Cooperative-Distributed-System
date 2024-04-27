@@ -13,9 +13,9 @@ public class StompClient {
     private static StompSession socketStompClient;
     private static String id;
 
-    public static void connect(String ip, String id) throws ExecutionException, InterruptedException {
+    public static void connect(String ip) throws ExecutionException, InterruptedException {
+        System.out.println("ws://" + ip + ":8080/whiteboard");
         socketStompClient = ClientWebSocketStompConfig.getWebSocketStompClient("ws://" + ip + ":8080/whiteboard");
-        id = id;
     }
 
     public static void subscribe(HashMap<Integer, Figure> figureMap, Queue<Figure> figures) {

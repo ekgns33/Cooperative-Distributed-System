@@ -1,12 +1,13 @@
 package com.example.demo.stomp_client;
 
 import com.example.demo.Message;
-import com.example.demo.gui.Figure;
+import com.example.demo.gui.*;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Queue;
@@ -24,10 +25,29 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         Message message = (Message) payload;
-
-        // 1. message -> figure 컨버팅
-
-        // 2. figureMap, figures에 추가하기
+        Figure curFigure = figureMap.get(message.getId());
+        if (curFigure != null) {
+            if (message.getType() == 0) {
+                ((Circle) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
+            } else if (message.getType() == 1) {
+                ((Rect) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
+            } else if (message.getType() == 2) {
+                ((Line) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
+            } else if (message.getType() == 3) {
+                ((Text) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
+            }
+        } else {
+            if (message.getType() == 0) {
+                curFigure = new Circle(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
+            } else if (message.getType() == 1) {
+                curFigure = new Rect(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
+            } else if (message.getType() == 2) {
+                curFigure = new Line(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
+            } else if (message.getType() == 3) {
+                curFigure = new Text(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
+            }
+            figures.add(curFigure);
+        }
 
         System.out.println("payload = " + message);
     }

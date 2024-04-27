@@ -1,20 +1,54 @@
 package com.example.demo.gui;
 
+import com.example.demo.Message;
+
 import java.awt.*;
 
 public class Line implements Figure {
-    public int x, y, x2, y2, lineWidth;
-    public Color lineColor;
+    public final Color[] colorList = {
+            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
+            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
+            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            null
+    };
+
+    public int id, x, y, x2, y2, lineWidth, lineColorIdx;
     public long creationTime;
 
-    public Line(int x, int y, int lineWidth, Color lineColor) {
+    public Line(int id, int x, int y, int lineWidth, int lineColorIdx) {
+        this.id = id;
         this.x = this.x2 = x;
         this.y = this.y2 = y;
         this.lineWidth = lineWidth;
-        this.lineColor = lineColor;
+        this.lineColorIdx = lineColorIdx;
         this.creationTime = System.currentTimeMillis();
     }
 
+    public Line(int id, int x, int y, int x2, int y2, int lineWidth, int lineColorIdx, long creationTime) {
+        this.id = id;
+        this.x = x;
+        this.y = y;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.lineWidth = lineWidth;
+        this.lineColorIdx = lineColorIdx;
+        this.creationTime = creationTime;
+    }
+
+    public void set( int x, int y, int x2, int y2, int lineWidth, int lineColorIdx, long creationTime) {
+        this.x = x;
+        this.y = y;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.lineWidth = lineWidth;
+        this.lineColorIdx = lineColorIdx;
+        this.creationTime = creationTime;
+    }
+
+    @Override
+    public int getId(){
+        return id;
+    }
 
     public long getCreationTime() {
         return creationTime;
@@ -25,7 +59,7 @@ public class Line implements Figure {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(lineWidth));
 
-        g.setColor(lineColor);
+        g.setColor(colorList[lineColorIdx]);
         g.drawLine(x, y, x2, y2);
     }
 
@@ -41,12 +75,12 @@ public class Line implements Figure {
     }
 
     @Override
-    public void setLineColor(Color lineColor) {
-        this.lineColor = lineColor;
+    public void setLineColor(int lineColorIdx) {
+        this.lineColorIdx = lineColorIdx;
     }
 
     @Override
-    public void setFillColor(Color fillColor) {
+    public void setFillColor(int fillColorIdx) {
         // Do nothing
     }
 
@@ -60,6 +94,11 @@ public class Line implements Figure {
     @Override
     public int compareTo(Figure other) {
         return Long.compare(this.getCreationTime(), other.getCreationTime());
+    }
+
+    @Override
+    public Message getMessage(){
+        return Message.figure(2, creationTime, id,lineWidth, 0, lineColorIdx, x,y,x2,y2);
     }
 }
 

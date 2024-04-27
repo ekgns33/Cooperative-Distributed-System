@@ -1,8 +1,10 @@
 package com.example.demo.gui;
 
+import com.example.demo.Message;
 import com.example.demo.stomp_client.StompClient;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -10,9 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class Board extends JFrame {
     int curButtonIdx;
@@ -34,7 +34,7 @@ public class Board extends JFrame {
     Figure curFigure;
     int curID, curLineWidth = 1;
 
-    public Board() {
+    public Board(String id) {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         } catch (Exception e) {
@@ -54,6 +54,7 @@ public class Board extends JFrame {
         figures = new PriorityQueue<>();
 
         StompClient.subscribe(figureMap, figures);
+        StompClient.send(Message.enterRoom(id));
     }
 
     private void buttonInit() {
@@ -71,8 +72,7 @@ public class Board extends JFrame {
             button[i].setFocusPainted(false);
             if (i < 4) {
                 figureTypePanel.add(button[i]);
-            }
-            else {
+            } else {
                 figureModifyPanel.add(button[i]);
             }
         }
@@ -117,26 +117,26 @@ public class Board extends JFrame {
             public void mousePressed(MouseEvent e) {
                 try {
                     if (curButtonIdx == 0) {
-                        curFigure = new Circle(e.getX(), e.getY(), curLineWidth, colorList[curColorIdx]);
-                        figureMap.put(idGenerator.getID(), curFigure);
+                        curID = idGenerator.getID();
+                        curFigure = new Circle(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
+                        figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else if (curButtonIdx == 1) {
-                        curFigure = new Rect(e.getX(), e.getY(), curLineWidth, colorList[curColorIdx]);
-                        figureMap.put(idGenerator.getID(), curFigure);
+                    } else if (curButtonIdx == 1) {
+                        curID = idGenerator.getID();
+                        curFigure = new Rect(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
+                        figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else if (curButtonIdx == 2) {
-                        curFigure = new Line(e.getX(), e.getY(), curLineWidth, colorList[curColorIdx]);
-                        figureMap.put(idGenerator.getID(), curFigure);
+                    } else if (curButtonIdx == 2) {
+                        curID = idGenerator.getID();
+                        curFigure = new Line(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
+                        figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else if (curButtonIdx == 3) {
-                        curFigure = new Text(e.getX(), e.getY(), colorList[curColorIdx]);
-                        figureMap.put(idGenerator.getID(), curFigure);
+                    } else if (curButtonIdx == 3) {
+                        curID = idGenerator.getID();
+                        curFigure = new Text(curID, e.getX(), e.getY(), curColorIdx);
+                        figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else {
+                    } else {
                         curFigure = null;
                         for (Figure figure : figures) {
                             if (figure.contains(e.getPoint())) {
@@ -145,17 +145,13 @@ public class Board extends JFrame {
                         }
                         if (curFigure == null) {
                             // Do nothing
-                        }
-                        else if (curButtonIdx == 4) {
+                        } else if (curButtonIdx == 4) {
                             curFigure.setLineWidth(curLineWidth);
+                        } else if (curButtonIdx == 5) {
+                            curFigure.setLineColor(curColorIdx);
+                        } else if (curButtonIdx == 6) {
+                            curFigure.setFillColor(curColorIdx);
                         }
-                        else if (curButtonIdx == 5) {
-                            curFigure.setLineColor(colorList[curColorIdx]);
-                        }
-                        else if (curButtonIdx == 6) {
-                            curFigure.setFillColor(colorList[curColorIdx]);
-                        }
-                        curFigure = null;
                     }
                 } catch (NullPointerException err) {
                     err.printStackTrace();
@@ -173,7 +169,9 @@ public class Board extends JFrame {
                     textFigure.setText(inputText);
                     textFigure.isDrawing = false;
                 }
-                if (curButtonIdx < 4) {
+
+                if (curFigure != null) {
+                    StompClient.send(curFigure.getMessage());
                     curFigure = null;
                 }
             }
@@ -192,6 +190,9 @@ public class Board extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawingPanel.repaint();
+                if (curFigure != null) {
+                    StompClient.send(curFigure.getMessage());
+                }
             }
         });
         timer.start();

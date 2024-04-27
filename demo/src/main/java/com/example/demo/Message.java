@@ -30,11 +30,11 @@ public class Message {
         return new Message(2, nickname, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
 
-    public static Message figure(int type, int time, int id, int lineWidth, int fillColor, int drawColor, int x, int y, int x2, int y2) {
+    public static Message figure(int type, long time, int id, int lineWidth, int fillColor, int drawColor, int x, int y, int x2, int y2) {
         return new Message(3, null, type, time, id, lineWidth, fillColor, drawColor, x, y, x2, y2, null);
     }
 
-    public static Message text(int type, int time, int id, int lineWidth, int fillColor, int drawColor, int x, int y, int x2, int y2, String text) {
+    public static Message text(int type, long time, int id, int lineWidth, int fillColor, int drawColor, int x, int y, int x2, int y2, String text) {
         return new Message(3, null, type, time, id, lineWidth, fillColor, drawColor, x, y, x2, y2, text);
     }
 }
