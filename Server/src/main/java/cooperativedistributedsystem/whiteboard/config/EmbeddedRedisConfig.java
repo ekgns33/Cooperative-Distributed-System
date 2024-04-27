@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 import redis.embedded.RedisServer;
@@ -14,13 +15,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
+@Profile("local")
 @Configuration
 public class EmbeddedRedisConfig {
 
     @Value("${spring.data.redis.port}")
     private Integer redisPort;
     private RedisServer redisServer;
-
 
     @PostConstruct
     private void startRedis() throws IOException {
