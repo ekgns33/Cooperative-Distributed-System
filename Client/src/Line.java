@@ -34,8 +34,14 @@ public class Line implements Figure {
         this.y2 = p.y;
     }
 
-    public void fill(Color fillColor) {
+    @Override
+    public void setFillColor(Color fillColor) {
         // Do nothing
+    }
+
+    @Override
+    public void setLineColor(Color lineColor) {
+        this.lineColor = lineColor;
     }
 
     public boolean contains(Point p) {

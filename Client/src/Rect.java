@@ -43,11 +43,17 @@ public class Rect implements Figure {
         this.y2 = p.y;
     }
 
-    public void fill(Color fillColor) {
+    @Override
+    public void setFillColor(Color fillColor) {
         if (this.fillColor == fillColor)
             this.fillColor = null;
         else
             this.fillColor = fillColor;
+    }
+
+    @Override
+    public void setLineColor(Color lineColor) {
+        this.lineColor = lineColor;
     }
 
     @Override
