@@ -2,6 +2,7 @@ package com.example.demo.gui;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.demo.Message;
+import com.example.demo.stomp_client.EnterService;
 import com.example.demo.stomp_client.StompClient;
 
 import javax.swing.*;
@@ -66,6 +67,34 @@ public class Board extends JFrame {
 
         StompClient.subscribe(figureMap, figures);
         StompClient.send(Message.enterRoom(id));
+
+        EnterService enterService = new EnterService();
+        try {
+            for (Message message : enterService.getRoomHistories(ip)) {
+                Figure curFigure = null;
+                if(message.getStatus() < 3) {
+                    continue;
+                }
+                System.out.println(message.getType() + " "+  message.getX()  + " "+ message.getY() + " "+ message.getX2() + " "+  message.getY2());
+                if (message.getType() == 0) {
+                    curFigure = new Circle(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
+                } else if (message.getType() == 1) {
+                    curFigure = new Rect(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
+                } else if (message.getType() == 2) {
+                    curFigure = new Line(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
+                } else if (message.getType() == 3) {
+                    curFigure = new Text(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
+                }
+                figureMap.put(message.getId(), curFigure);
+                figures.add(curFigure);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred while initializing IDGenerator: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+
     }
 
     private void buttonInit() {
@@ -126,6 +155,10 @@ public class Board extends JFrame {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                if (curFigure != null) {
+                    StompClient.send(curFigure.getMessage());
+                    curFigure = null;
+                }
                 try {
                     if (curButtonIdx == 0) {
                         curID = idGenerator.getID();
@@ -148,7 +181,6 @@ public class Board extends JFrame {
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
                     } else {
-                        curFigure = null;
                         for (Figure figure : figures) {
                             if (figure.contains(e.getPoint())) {
                                 curFigure = figure;

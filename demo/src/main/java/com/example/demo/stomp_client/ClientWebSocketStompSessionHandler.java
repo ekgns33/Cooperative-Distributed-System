@@ -25,6 +25,14 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         Message message = (Message) payload;
+        if(message.getStatus() == 1){
+            // TODO: Enter
+            return;
+        }
+        if(message.getStatus() == 2){
+            // TODO: Exit
+            return;
+        }
         Figure curFigure = figureMap.get(message.getId());
         if (curFigure != null) {
             if (message.getType() == 0) {
