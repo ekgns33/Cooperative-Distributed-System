@@ -46,6 +46,7 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
             } else if (message.getType() == 3) {
                 curFigure = new Text(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
             }
+            figureMap.put(message.getId(), curFigure);
             figures.add(curFigure);
         }
 
