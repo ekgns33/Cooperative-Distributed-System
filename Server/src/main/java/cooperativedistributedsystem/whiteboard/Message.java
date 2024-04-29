@@ -40,7 +40,7 @@ public class Message {
 
 /*
 {
-    "enter":false,
+    "status": 3,
     "type":1,
     "time":123,
     "id":1,
