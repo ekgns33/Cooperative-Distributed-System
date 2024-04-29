@@ -18,11 +18,11 @@ public class StompController {
     public void sendMessage(Message message) {
         if (message.getStatus() == 1) {
             log.info("New user enter!!");
-            sendingOperations.convertAndSend("/room", "enter " + message.getNickname());
+            sendingOperations.convertAndSend("/room", message);
         }
         else if (message.getStatus() == 2) {
             log.info("user out!!");
-            sendingOperations.convertAndSend("/room", "out " + message.getNickname());
+            sendingOperations.convertAndSend("/room", message);
         }
         else {
             log.info("{}", message);
