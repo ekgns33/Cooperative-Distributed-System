@@ -1,6 +1,5 @@
 package com.example.demo.gui;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.demo.Message;
 import com.example.demo.stomp_client.EnterService;
 import com.example.demo.stomp_client.StompClient;
@@ -32,6 +31,7 @@ public class Board extends JFrame {
     Queue<Figure> figures;
     Figure curFigure;
     int curID, curLineWidth = 1;
+    JLabel noticeLabel = new JLabel("");
 
     public Board(String id, String ip) {
         try {
@@ -65,7 +65,7 @@ public class Board extends JFrame {
         figureMap = new HashMap<>();
         figures = new PriorityQueue<>();
 
-        StompClient.subscribe(figureMap, figures);
+        StompClient.subscribe(figureMap, figures, noticeLabel);
         StompClient.send(Message.enterRoom(id));
 
         EnterService enterService = new EnterService();
@@ -99,6 +99,8 @@ public class Board extends JFrame {
 
     private void buttonInit() {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        JPanel notice = new JPanel();
+        JPanel panel = new JPanel();
         JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
         JPanel figureModifyPanel = new JPanel(new GridLayout(1, 3));
         JPanel figureValuePanel = new JPanel(new GridLayout(2, 1));
@@ -131,11 +133,18 @@ public class Board extends JFrame {
         figureValuePanel.add(colorPanel);
         figureValuePanel.add(slider);
 
+        panel.setLayout(new BorderLayout());
+
+        noticeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        noticeLabel.setVerticalAlignment(SwingConstants.CENTER);
+        notice.add(noticeLabel);
+
         buttonPanel.add(figureTypePanel);
         buttonPanel.add(figureModifyPanel);
         buttonPanel.add(figureValuePanel);
-
-        add(buttonPanel, BorderLayout.NORTH);
+        panel.add(buttonPanel,BorderLayout.NORTH);
+        panel.add(notice,BorderLayout.CENTER);
+        add(panel, BorderLayout.NORTH);
     }
 
     private void boardInit() {

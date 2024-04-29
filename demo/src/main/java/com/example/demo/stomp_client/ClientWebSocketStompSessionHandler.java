@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
+import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -16,21 +17,25 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
 
     public final HashMap<Integer, Figure> figureMap;
     public final Queue<Figure> figures;
+    public final JLabel noticeLabel;
 
-    public ClientWebSocketStompSessionHandler(HashMap<Integer, Figure> figureMap, Queue<Figure> figures) {
+    public ClientWebSocketStompSessionHandler(HashMap<Integer, Figure> figureMap, Queue<Figure> figures, JLabel noticeLabel) {
         this.figureMap = figureMap;
         this.figures = figures;
+        this.noticeLabel = noticeLabel;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         Message message = (Message) payload;
         if(message.getStatus() == 1){
-            // TODO: Enter
+            System.out.println(message.getNickname() + "is enter");
+            noticeLabel.setText(message.getNickname() + " is enter");
             return;
         }
         if(message.getStatus() == 2){
-            // TODO: Exit
+            System.out.println(message.getNickname() + "is out");
+            noticeLabel.setText(message.getNickname() + " is out");
             return;
         }
         Figure curFigure = figureMap.get(message.getId());
