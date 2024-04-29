@@ -30,7 +30,7 @@ public class MessageRepository {
                 .map(o -> (Message) o)
                 .toList();
 
-        Set<Message> chatroomSet = new HashSet<>(chatroom);
+        Set<Message> chatroomSet = new HashSet<>();
         for (int i = chatroom.size() - 1; i >= 0; i--) {
             chatroomSet.add(chatroom.get(i));
         }
