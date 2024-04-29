@@ -3,11 +3,13 @@ package cooperativedistributedsystem.whiteboard;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString
 public class Message {
     int status; // 1: 입장, 2: 퇴장, 3: 메시지
     String nickname; // 유저 닉네임

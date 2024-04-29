@@ -17,15 +17,15 @@ public class StompController {
     @MessageMapping("/pub")
     public void sendMessage(Message message) {
         if (message.getStatus() == 1) {
-            log.info("New user enter!!");
+            log.info("New user enter!!. message={}", message);
             sendingOperations.convertAndSend("/room", message);
         }
         else if (message.getStatus() == 2) {
-            log.info("user out!!");
+            log.info("user out!!. message={}", message);
             sendingOperations.convertAndSend("/room", message);
         }
         else {
-            log.info("{}", message);
+            log.info("message={}", message);
             messageRepository.save(message);
             sendingOperations.convertAndSend("/room", message);
         }
