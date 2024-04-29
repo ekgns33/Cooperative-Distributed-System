@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-@Profile("local")
+@Profile("embedded")
 @Configuration
 public class EmbeddedRedisConfig {
 
