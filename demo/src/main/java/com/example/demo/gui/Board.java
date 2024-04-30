@@ -75,7 +75,6 @@ public class Board extends JFrame {
                 if(message.getStatus() < 3) {
                     continue;
                 }
-                System.out.println(message.getType() + " "+  message.getX()  + " "+ message.getY() + " "+ message.getX2() + " "+  message.getY2());
                 if (message.getType() == 0) {
                     curFigure = new Circle(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
                 } else if (message.getType() == 1) {

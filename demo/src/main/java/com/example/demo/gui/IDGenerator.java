@@ -15,8 +15,6 @@ public class IDGenerator {
         this.enterService = new EnterService();
         curID = enterService.reissueId(ip);
         nextID = -1;
-        System.out.println("cur ID:" + curID);
-        System.out.println("next ID:" + nextID);
     }
 
     public synchronized int getID() throws RuntimeException {

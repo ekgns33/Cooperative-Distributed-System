@@ -7,23 +7,21 @@ import java.util.concurrent.ExecutionException;
 
 public class Login extends JFrame {
     private JTextField idField;
-    private JTextField ipField;
     private JButton loginButton;
+    private final String ip = "117.16.137.190";
 
     public Login() {
         setTitle("로그인");
-        setSize(300, 150);
+        setSize(300, 100);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         idField = new JTextField(20);
-        ipField = new JTextField(20);
         loginButton = new JButton("로그인");
 
         loginButton.addActionListener(e -> {
-            String id = idField.getText();
-            if (Login.this.authenticate(ipField.getText())) {
-                Board board = new Board(idField.getText(), ipField.getText());
+            if (Login.this.authenticate(ip)) {
+                Board board = new Board(idField.getText(), ip);
                 board.setVisible(true);
                 Login.this.dispose();
             } else {
@@ -33,8 +31,6 @@ public class Login extends JFrame {
 
         add(new JLabel("ID:"));
         add(idField);
-        add(new JLabel("IP:"));
-        add(ipField);
         add(loginButton);
 
         setLocationRelativeTo(null);

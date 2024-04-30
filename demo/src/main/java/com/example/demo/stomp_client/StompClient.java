@@ -15,7 +15,7 @@ public class StompClient {
     private static String id;
 
     public static void connect(String ip) throws ExecutionException, InterruptedException {
-        System.out.println("ws://" + ip + ":8080/whiteboard");
+        System.out.println("Connecting to ws://" + ip + ":8080/whiteboard");
         socketStompClient = ClientWebSocketStompConfig.getWebSocketStompClient("ws://" + ip + ":8080/whiteboard");
     }
 

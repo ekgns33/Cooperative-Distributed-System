@@ -55,11 +55,6 @@ public class Text implements Figure {
     }
 
     @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
     public long getCreationTime() {
         return creationTime;
     }
