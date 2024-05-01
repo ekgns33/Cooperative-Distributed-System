@@ -8,16 +8,15 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Queue;
 
 public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapter {
 
-    public final HashMap<Integer, Figure> figureMap;
-    public final Queue<Figure> figures;
     public final JLabel noticeLabel;
+    public final Queue<Figure> figures;
+    public final HashMap<Integer, Figure> figureMap;
 
     public ClientWebSocketStompSessionHandler(HashMap<Integer, Figure> figureMap, Queue<Figure> figures, JLabel noticeLabel) {
         this.figureMap = figureMap;
@@ -43,27 +42,34 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
             if (message.getType() == 0) {
 //                System.out.println("[Log]message received: Circle");
                 ((Circle) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-            } else if (message.getType() == 1) {
+            }
+            else if (message.getType() == 1) {
 //                System.out.println("[Log]message received: Rect");
                 ((Rect) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-            } else if (message.getType() == 2) {
+            }
+            else if (message.getType() == 2) {
 //                System.out.println("[Log]message received: Line");
                 ((Line) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
-            } else if (message.getType() == 3) {
+            }
+            else if (message.getType() == 3) {
 //                System.out.println("[Log]message received: Text");
                 ((Text) curFigure).set(message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
             }
-        } else {
+        }
+        else {
             if (message.getType() == 0) {
 //                System.out.println("[Log]message received: Circle");
                 curFigure = new Circle(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-            } else if (message.getType() == 1) {
+            }
+            else if (message.getType() == 1) {
 //                System.out.println("[Log]message received: Rect");
                 curFigure = new Rect(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-            } else if (message.getType() == 2) {
+            }
+            else if (message.getType() == 2) {
 //                System.out.println("[Log]message received: Line");
                 curFigure = new Line(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
-            } else if (message.getType() == 3) {
+            }
+            else if (message.getType() == 3) {
 //                System.out.println("[Log]message received: Text");
                 curFigure = new Text(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
             }

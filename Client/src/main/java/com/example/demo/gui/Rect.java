@@ -107,7 +107,7 @@ public class Rect implements Figure {
     }
 
     @Override
-    public Message getMessage(){
+    public Message getMessage() {
         return Message.figure(1, creationTime, id, lineWidth, fillColorIdx, lineColorIdx, x, y, x2, y2);
     }
 }

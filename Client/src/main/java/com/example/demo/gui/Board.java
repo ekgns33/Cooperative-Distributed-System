@@ -5,12 +5,13 @@ import com.example.demo.stomp_client.EnterService;
 import com.example.demo.stomp_client.StompClient;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Board extends JFrame {
     int curButtonIdx;
@@ -33,7 +34,7 @@ public class Board extends JFrame {
     int curID, curLineWidth = 1;
     JLabel noticeLabel = new JLabel("");
 
-    public Board(String id, String ip) {
+    public Board(String id, String ip, int port) {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         } catch (Exception e) {
@@ -55,7 +56,7 @@ public class Board extends JFrame {
         buttonInit();
         boardInit();
         try {
-            idGenerator = new IDGenerator(ip);
+            idGenerator = new IDGenerator(ip, port);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                     "Error occurred while initializing IDGenerator: " + e.getMessage(),
@@ -70,18 +71,21 @@ public class Board extends JFrame {
 
         EnterService enterService = new EnterService();
         try {
-            for (Message message : enterService.getRoomHistories(ip)) {
+            for (Message message : enterService.getRoomHistories(ip, port)) {
                 Figure curFigure = null;
-                if(message.getStatus() < 3) {
+                if (message.getStatus() < 3) {
                     continue;
                 }
                 if (message.getType() == 0) {
                     curFigure = new Circle(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-                } else if (message.getType() == 1) {
+                }
+                else if (message.getType() == 1) {
                     curFigure = new Rect(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-                } else if (message.getType() == 2) {
+                }
+                else if (message.getType() == 2) {
                     curFigure = new Line(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
-                } else if (message.getType() == 3) {
+                }
+                else if (message.getType() == 3) {
                     curFigure = new Text(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
                 }
                 figureMap.put(message.getId(), curFigure);
@@ -113,7 +117,8 @@ public class Board extends JFrame {
             button[i].setFocusPainted(false);
             if (i < 4) {
                 figureTypePanel.add(button[i]);
-            } else {
+            }
+            else {
                 figureModifyPanel.add(button[i]);
             }
         }
@@ -141,8 +146,8 @@ public class Board extends JFrame {
         buttonPanel.add(figureTypePanel);
         buttonPanel.add(figureModifyPanel);
         buttonPanel.add(figureValuePanel);
-        panel.add(buttonPanel,BorderLayout.NORTH);
-        panel.add(notice,BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.NORTH);
+        panel.add(notice, BorderLayout.CENTER);
         add(panel, BorderLayout.NORTH);
     }
 
@@ -173,22 +178,26 @@ public class Board extends JFrame {
                         curFigure = new Circle(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    } else if (curButtonIdx == 1) {
+                    }
+                    else if (curButtonIdx == 1) {
                         curID = idGenerator.getID();
                         curFigure = new Rect(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    } else if (curButtonIdx == 2) {
+                    }
+                    else if (curButtonIdx == 2) {
                         curID = idGenerator.getID();
                         curFigure = new Line(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    } else if (curButtonIdx == 3) {
+                    }
+                    else if (curButtonIdx == 3) {
                         curID = idGenerator.getID();
                         curFigure = new Text(curID, e.getX(), e.getY(), curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    } else {
+                    }
+                    else {
                         for (Figure figure : figures) {
                             if (figure.contains(e.getPoint())) {
                                 curFigure = figure;
@@ -196,11 +205,14 @@ public class Board extends JFrame {
                         }
                         if (curFigure == null) {
                             // Do nothing
-                        } else if (curButtonIdx == 4) {
+                        }
+                        else if (curButtonIdx == 4) {
                             curFigure.setLineWidth(curLineWidth);
-                        } else if (curButtonIdx == 5) {
+                        }
+                        else if (curButtonIdx == 5) {
                             curFigure.setLineColor(curColorIdx);
-                        } else if (curButtonIdx == 6) {
+                        }
+                        else if (curButtonIdx == 6) {
                             curFigure.setFillColor(curColorIdx);
                         }
                     }

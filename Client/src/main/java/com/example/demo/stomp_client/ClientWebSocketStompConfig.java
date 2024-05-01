@@ -14,7 +14,6 @@ public class ClientWebSocketStompConfig {
         WebSocketStompClient webSocketClient = new WebSocketStompClient(new StandardWebSocketClient());
         webSocketClient.setMessageConverter(new MappingJackson2MessageConverter());
         StompSessionHandler stompSessionHandler = new ClientWebSocketStompSessionHandler(null, null, null);
-
         Object[] urlVariables = {};
         return webSocketClient.connect(url, null, null, stompSessionHandler, urlVariables).get();
     }

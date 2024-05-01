@@ -12,11 +12,10 @@ import java.util.concurrent.ExecutionException;
 public class StompClient {
 
     private static StompSession socketStompClient;
-    private static String id;
 
-    public static void connect(String ip) throws ExecutionException, InterruptedException {
-        System.out.println("Connecting to ws://" + ip + ":8080/whiteboard");
-        socketStompClient = ClientWebSocketStompConfig.getWebSocketStompClient("ws://" + ip + ":8080/whiteboard");
+    public static void connect(String ip, int port) throws ExecutionException, InterruptedException {
+        System.out.println("Connecting to ws://" + ip + ":" + port + "/whiteboard");
+        socketStompClient = ClientWebSocketStompConfig.getWebSocketStompClient("ws://" + ip + ":" + port + "/whiteboard");
     }
 
     public static void subscribe(HashMap<Integer, Figure> figureMap, Queue<Figure> figures, JLabel noticeLabel) {

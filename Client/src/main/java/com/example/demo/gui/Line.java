@@ -35,7 +35,7 @@ public class Line implements Figure {
         this.creationTime = creationTime;
     }
 
-    public void set( int x, int y, int x2, int y2, int lineWidth, int lineColorIdx, long creationTime) {
+    public void set(int x, int y, int x2, int y2, int lineWidth, int lineColorIdx, long creationTime) {
         this.x = x;
         this.y = y;
         this.x2 = x2;
@@ -92,8 +92,8 @@ public class Line implements Figure {
     }
 
     @Override
-    public Message getMessage(){
-        return Message.figure(2, creationTime, id,lineWidth, 0, lineColorIdx, x,y,x2,y2);
+    public Message getMessage() {
+        return Message.figure(2, creationTime, id, lineWidth, 0, lineColorIdx, x, y, x2, y2);
     }
 }
 

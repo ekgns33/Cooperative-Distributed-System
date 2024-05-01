@@ -13,10 +13,10 @@ import java.util.List;
 
 public class EnterService {
 
-    public List<Message> getRoomHistories(String ip) throws IOException, InterruptedException {
+    public List<Message> getRoomHistories(String ip, int port) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://" + ip + ":8080"))
+                .uri(URI.create("http://" + ip + ":" + port))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -25,10 +25,10 @@ public class EnterService {
         });
     }
 
-    public int reissueId(String ip) throws IOException, InterruptedException {
+    public int reissueId(String ip, int port) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://" + ip + ":8080/id"))
+                .uri(URI.create("http://" + ip + ":" + port + "/id"))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

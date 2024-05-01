@@ -1,8 +1,8 @@
 package com.example.demo.gui;
 
-import java.awt.*;
-
 import com.example.demo.Message;
+
+import java.awt.*;
 
 public class Text implements Figure {
     public final Color[] colorList = {
@@ -42,7 +42,7 @@ public class Text implements Figure {
         this.text = text;
     }
 
-    public void set( int x, int y, int x2, int y2, int fontSize, int lineColorIdx, long creationTime, String text) {
+    public void set(int x, int y, int x2, int y2, int fontSize, int lineColorIdx, long creationTime, String text) {
         this.x = x;
         this.y = y;
         this.x2 = x2;

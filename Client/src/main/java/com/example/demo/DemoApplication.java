@@ -9,12 +9,14 @@ import javax.swing.*;
 @SpringBootApplication
 public class DemoApplication {
 
+    private static final String serverIp = "117.16.137.190";
+    private static final int serverPort = 8080;
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Login login = new Login();
+            Login login = new Login(serverIp, serverPort);
             login.setVisible(true);
         });
-
         SpringApplication.run(DemoApplication.class, args);
     }
 

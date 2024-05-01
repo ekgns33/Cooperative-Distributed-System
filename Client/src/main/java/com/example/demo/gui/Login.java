@@ -3,14 +3,12 @@ package com.example.demo.gui;
 import com.example.demo.stomp_client.StompClient;
 
 import javax.swing.*;
-import java.util.concurrent.ExecutionException;
 
 public class Login extends JFrame {
     private JTextField idField;
     private JButton loginButton;
-    private final String ip = "117.16.137.190";
 
-    public Login() {
+    public Login(String ip, int port) {
         setTitle("로그인");
         setSize(300, 100);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,11 +18,12 @@ public class Login extends JFrame {
         loginButton = new JButton("로그인");
 
         loginButton.addActionListener(e -> {
-            if (Login.this.authenticate(ip)) {
-                Board board = new Board(idField.getText(), ip);
+            if (Login.this.authenticate(ip, port)) {
+                Board board = new Board(idField.getText(), ip, port);
                 board.setVisible(true);
                 Login.this.dispose();
-            } else {
+            }
+            else {
                 JOptionPane.showMessageDialog(Login.this, "로그인 실패");
             }
         });
@@ -36,9 +35,9 @@ public class Login extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private boolean authenticate(String ip) {
+    private boolean authenticate(String ip, int port) {
         try {
-            StompClient.connect(ip);
+            StompClient.connect(ip, port);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
