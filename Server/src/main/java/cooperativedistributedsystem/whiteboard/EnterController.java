@@ -2,10 +2,8 @@ package cooperativedistributedsystem.whiteboard;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -13,23 +11,21 @@ import java.util.Set;
 public class EnterController {
 
     private final MessageRepository messageRepository;
-    private long objectId = 0L;
-    private final long interval = 1024L;
+    private int objectId = 0;
+    private final int interval = 1024;
 
     @GetMapping
-    public EnterResponse enter() {
-        Set<Message> all = messageRepository.findAll();
-        long startId = getObjectStartId();
-        return new EnterResponse(all, startId);
+    public Set<Message> enter() {
+        return messageRepository.findAll();
     }
 
-    @PostMapping
-    public long allocateObjectId() {
+    @GetMapping("id")
+    public int allocateObjectId() {
         return getObjectStartId();
     }
 
-    private synchronized long getObjectStartId() {
-        long startId = objectId;
+    private synchronized int getObjectStartId() {
+        int startId = objectId;
         objectId += interval;
         return startId;
     }
