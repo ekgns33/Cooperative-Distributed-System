@@ -1,0 +1,21 @@
+
+h
+java:S1104"MMake x a static final constant or non-public and provide accessors if needed.(œÞ©šúÿÿÿÿ
+h
+java:S1104"MMake y a static final constant or non-public and provide accessors if needed.(œÞ©šúÿÿÿÿ
+i
+java:S1104"NMake x2 a static final constant or non-public and provide accessors if needed.(œÞ©šúÿÿÿÿ
+i
+java:S1104"NMake y2 a static final constant or non-public and provide accessors if needed.(œÞ©šúÿÿÿÿ
+p
+java:S1104"UMake lineColor a static final constant or non-public and provide accessors if needed.(íÁ†Œüÿÿÿÿ
+p
+java:S1104"UMake fillColor a static final constant or non-public and provide accessors if needed.(íÁ†Œüÿÿÿÿ
+s
+java:S1104"XMake creationTime a static final constant or non-public and provide accessors if needed.(Ü©èÉÿÿÿÿÿ
+0
+java:S1220""Move this file to a named package.
+Y
+java:S1659">Declare "y" and all following declarations on a separate line.(œÞ©šúÿÿÿÿ
+B
+java:S1659"'Declare "fillColor" on a separate line.(íÁ†Œüÿÿÿÿ
