@@ -29,7 +29,7 @@ public class Login extends JFrame {
             }
         });
 
-        add(new JLabel("ID:"));
+        add(new JLabel("닉네임"));
         add(idField);
         add(loginButton);
 
