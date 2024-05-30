@@ -15,6 +15,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/room");
+        registry.enableSimpleBroker("/room");
     }
 
     @Override
@@ -22,7 +23,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/whiteboard")
                 .setAllowedOriginPatterns("*");
     }
-
 
 
 }

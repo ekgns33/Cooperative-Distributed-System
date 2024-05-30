@@ -11,6 +11,7 @@ import java.util.Set;
 public class EnterController {
 
     private final MessageRepository messageRepository;
+    private final LockService lockService;
     private int objectId = 0;
     private final int interval = 1024;
 
@@ -21,6 +22,7 @@ public class EnterController {
 
     @GetMapping("id")
     public int allocateObjectId() {
+        lockService.addObject(interval);
         return getObjectStartId();
     }
 

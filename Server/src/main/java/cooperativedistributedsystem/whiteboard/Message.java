@@ -11,8 +11,9 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class Message {
-    int status; // 1: 입장, 2: 퇴장, 3: 메시지
+    int status; // 1: 입장, 2: 퇴장, 3: 메시지, 4: lock, 5: unlock
     String nickname; // 유저 닉네임
+    boolean lockResult; // lock 결과
 
     int type; // 도형 종류
     long time; // 생성 시간

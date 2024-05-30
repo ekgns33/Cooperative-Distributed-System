@@ -9,7 +9,7 @@ import javax.swing.*;
 @SpringBootApplication
 public class DemoApplication {
 
-    private static final String serverIp = "117.16.137.190";
+    private static final String serverIp = "localhost";
     private static final int serverPort = 8080;
 
     public static void main(String[] args) {

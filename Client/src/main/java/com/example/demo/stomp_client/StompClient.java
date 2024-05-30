@@ -19,7 +19,10 @@ public class StompClient {
     }
 
     public static void subscribe(HashMap<Integer, Figure> figureMap, Queue<Figure> figures, JLabel noticeLabel) {
-        socketStompClient.subscribe("/room", new ClientWebSocketStompSessionHandler(figureMap, figures, noticeLabel));
+        String sessionId = socketStompClient.getSessionId();
+        ClientWebSocketStompSessionHandler stompSessionHandler = new ClientWebSocketStompSessionHandler(figureMap, figures, noticeLabel);
+        socketStompClient.subscribe("/room-user" + sessionId, stompSessionHandler);
+        socketStompClient.subscribe("/room", stompSessionHandler);
     }
 
     public static void send(Message message) {
