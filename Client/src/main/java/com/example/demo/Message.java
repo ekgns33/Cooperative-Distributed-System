@@ -7,8 +7,9 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class Message {
-    int status; // 1: 입장, 2: 퇴장, 3: 메시지
+    int status; // 1: 입장, 2: 퇴장, 3: 메시지, 4: lock, 5: unlock
     String nickname; // 유저 닉네임
+    boolean lockResult; // lock 결과
 
     int type; // 도형 종류
     long time; // 생성 시간
@@ -23,19 +24,27 @@ public class Message {
     String text; // 글자
 
     public static Message enterRoom(String nickname) {
-        return new Message(1, nickname, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+        return new Message(1, nickname, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
 
     public static Message exitRoom(String nickname) {
-        return new Message(2, nickname, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+        return new Message(2, nickname, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
 
     public static Message figure(int type, long time, int id, int lineWidth, int fillColor, int drawColor, int x, int y, int x2, int y2) {
-        return new Message(3, null, type, time, id, lineWidth, fillColor, drawColor, x, y, x2, y2, null);
+        return new Message(3, null, false, type, time, id, lineWidth, fillColor, drawColor, x, y, x2, y2, null);
     }
 
     public static Message text(int type, long time, int id, int lineWidth, int fillColor, int drawColor, int x, int y, int x2, int y2, String text) {
-        return new Message(3, null, type, time, id, lineWidth, fillColor, drawColor, x, y, x2, y2, text);
+        return new Message(3, null, false, type, time, id, lineWidth, fillColor, drawColor, x, y, x2, y2, text);
+    }
+
+    public static Message tryLock(int id) {
+        return new Message(4, null, false, 0, 0, id, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
+    public static Message unlock(int id) {
+        return new Message(5, null, false, 0, 0, id, 0, 0, 0, 0, 0, 0, 0, null);
     }
 }
 
