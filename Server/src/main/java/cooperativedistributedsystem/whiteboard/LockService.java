@@ -26,4 +26,12 @@ public class LockService {
         AtomicBoolean lock = locks.get(objectId);
         lock.set(false);
     }
+
+    /*
+    * Must acquire entire locks for drawing Objects!
+    * */
+    public synchronized void removeAll() {
+        locks.clear();
+    }
+
 }
