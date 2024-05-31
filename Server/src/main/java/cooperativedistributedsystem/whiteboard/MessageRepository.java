@@ -17,6 +17,10 @@ public class MessageRepository {
     private final String key = "chatroom";
 
     @PostConstruct
+    public void deleteAllOnBoot() {
+        redisTemplate.opsForList().getOperations().delete(key);
+    }
+
     public void deleteAll() {
         redisTemplate.opsForList().getOperations().delete(key);
     }
