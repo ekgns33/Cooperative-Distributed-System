@@ -110,4 +110,26 @@ public class Rect implements Figure {
     public Message getMessage() {
         return Message.figure(1, creationTime, id, lineWidth, fillColorIdx, lineColorIdx, x, y, x2, y2);
     }
+
+    @Override
+    public String getInfo() {
+        StringBuilder ret  = new StringBuilder("");
+        ret.append("2_");
+        ret.append(creationTime);
+        ret.append("_");
+        ret.append(lineWidth);
+        ret.append("_");
+        ret.append(fillColorIdx);
+        ret.append("_");
+        ret.append(lineColorIdx);
+        ret.append("_");
+        ret.append(x);
+        ret.append("_");
+        ret.append(y);
+        ret.append("_");
+        ret.append(x2);
+        ret.append("_");
+        ret.append(y2);
+        return ret.toString();
+    }
 }

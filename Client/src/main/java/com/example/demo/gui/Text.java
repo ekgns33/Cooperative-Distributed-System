@@ -118,4 +118,25 @@ public class Text implements Figure {
     public void setText(String text) {
         this.text = text;
     }
+
+    @Override
+    public String getInfo() {
+        StringBuilder ret  = new StringBuilder("");
+        ret.append("4_");
+        ret.append(creationTime);
+        ret.append("_");
+        ret.append(fontSize);
+        ret.append("_");
+        ret.append(lineColorIdx);
+        ret.append("_");
+        ret.append(x);
+        ret.append("_");
+        ret.append(y);
+        ret.append("_");
+        ret.append(x2);
+        ret.append("_");
+        ret.append(y2);
+        ret.append("_");
+        return ret.toString();
+    }
 }

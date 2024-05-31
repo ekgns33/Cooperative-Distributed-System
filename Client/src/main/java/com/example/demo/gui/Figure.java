@@ -13,4 +13,5 @@ public interface Figure extends Comparable<Figure>{
     void setFillColor(int fillColor);
     boolean contains(Point p);
     Message getMessage();
+    String getInfo();
 }
