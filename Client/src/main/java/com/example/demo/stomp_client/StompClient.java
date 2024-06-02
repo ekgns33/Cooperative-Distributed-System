@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.stomp.StompSession;
 
 import javax.swing.*;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
@@ -18,7 +19,7 @@ public class StompClient {
         socketStompClient = ClientWebSocketStompConfig.getWebSocketStompClient("ws://" + ip + ":" + port + "/whiteboard");
     }
 
-    public static void subscribe(HashMap<Integer, Figure> figureMap, Queue<Figure> figures, JLabel noticeLabel) {
+    public static void subscribe(HashMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel) {
         String sessionId = socketStompClient.getSessionId();
         ClientWebSocketStompSessionHandler stompHandler = new ClientWebSocketStompSessionHandler(figureMap, figures, noticeLabel);
         socketStompClient.subscribe("/room-user" + sessionId, stompHandler);

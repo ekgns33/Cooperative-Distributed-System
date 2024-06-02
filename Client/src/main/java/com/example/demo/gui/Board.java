@@ -9,6 +9,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -24,12 +27,13 @@ public class Board extends JFrame {
     };
     String[] buttonText = {
             "원", "사각형", "선", "텍스트",
-            "선 굵기", "선 색상", "색 채우기"
+            "선 굵기", "선 색상", "색 채우기",
+            "저장", "불러오기"
     };
     int curColorIdx;
     IDGenerator idGenerator;
     HashMap<Integer, Figure> figureMap;
-    Queue<Figure> figures;
+    PriorityQueue<Figure> figures;
     Figure curFigure;
     int curID, curLineWidth = 1;
     JLabel noticeLabel = new JLabel("");
@@ -78,14 +82,11 @@ public class Board extends JFrame {
                 }
                 if (message.getType() == 0) {
                     curFigure = new Circle(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-                }
-                else if (message.getType() == 1) {
+                } else if (message.getType() == 1) {
                     curFigure = new Rect(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getFillColor(), message.getTime());
-                }
-                else if (message.getType() == 2) {
+                } else if (message.getType() == 2) {
                     curFigure = new Line(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime());
-                }
-                else if (message.getType() == 3) {
+                } else if (message.getType() == 3) {
                     curFigure = new Text(message.getId(), message.getX(), message.getY(), message.getX2(), message.getY2(), message.getLineWidth(), message.getDrawColor(), message.getTime(), message.getText());
                 }
                 figureMap.put(message.getId(), curFigure);
@@ -105,23 +106,31 @@ public class Board extends JFrame {
         JPanel notice = new JPanel();
         JPanel panel = new JPanel();
         JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
-        JPanel figureModifyPanel = new JPanel(new GridLayout(1, 3));
+        JPanel figureModifyPanel = new JPanel(new GridLayout(1, 5));
         JPanel figureValuePanel = new JPanel(new GridLayout(2, 1));
 
         button = new JButton[buttonText.length];
 
         ButtonListener buttonListener = new ButtonListener();
+        SaveButtonListener saveButtonListener = new SaveButtonListener();
+        LoadButtonListener loadButtonListener = new LoadButtonListener();
+
+
         for (int i = 0; i < button.length; i++) {
             button[i] = new JButton(buttonText[i]);
-            button[i].addActionListener(buttonListener);
+            if(i < 7) {
+                button[i].addActionListener(buttonListener);
+            }
             button[i].setFocusPainted(false);
             if (i < 4) {
                 figureTypePanel.add(button[i]);
-            }
-            else {
+            } else {
                 figureModifyPanel.add(button[i]);
             }
         }
+        button[7].addActionListener(saveButtonListener);
+        button[8].addActionListener(loadButtonListener);
+
 
         curButtonIdx = 0;
         button[curButtonIdx].setEnabled(false);
@@ -178,26 +187,22 @@ public class Board extends JFrame {
                         curFigure = new Circle(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else if (curButtonIdx == 1) {
+                    } else if (curButtonIdx == 1) {
                         curID = idGenerator.getID();
                         curFigure = new Rect(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else if (curButtonIdx == 2) {
+                    } else if (curButtonIdx == 2) {
                         curID = idGenerator.getID();
                         curFigure = new Line(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else if (curButtonIdx == 3) {
+                    } else if (curButtonIdx == 3) {
                         curID = idGenerator.getID();
                         curFigure = new Text(curID, e.getX(), e.getY(), curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
-                    }
-                    else {
+                    } else {
                         for (Figure figure : figures) {
                             if (figure.contains(e.getPoint())) {
                                 curFigure = figure;
@@ -205,14 +210,11 @@ public class Board extends JFrame {
                         }
                         if (curFigure == null) {
                             // Do nothing
-                        }
-                        else if (curButtonIdx == 4) {
+                        } else if (curButtonIdx == 4) {
                             curFigure.setLineWidth(curLineWidth);
-                        }
-                        else if (curButtonIdx == 5) {
+                        } else if (curButtonIdx == 5) {
                             curFigure.setLineColor(curColorIdx);
-                        }
-                        else if (curButtonIdx == 6) {
+                        } else if (curButtonIdx == 6) {
                             curFigure.setFillColor(curColorIdx);
                         }
                     }
@@ -282,6 +284,22 @@ public class Board extends JFrame {
         colorButton[curColorIdx].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
     }
 
+    private void save() {
+        PriorityQueue<Figure> capture = new PriorityQueue<>(figures);
+        String filePath = "save.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            while (!capture.isEmpty()) {
+                String element = capture.poll().getInfo();
+                writer.write(element);
+                if(!capture.isEmpty())
+                    writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        System.out.println("[Log] Save complete");
+    }
+
     private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -292,6 +310,21 @@ public class Board extends JFrame {
                     curButtonIdx = i;
                 }
             }
+        }
+    }
+
+    private class SaveButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            save();
+        }
+    }
+
+    private class LoadButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO: LOAD
+//            load();
         }
     }
 
