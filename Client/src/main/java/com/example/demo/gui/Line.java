@@ -45,6 +45,12 @@ public class Line implements Figure {
         this.creationTime = creationTime;
     }
 
+    @Override
+    public int getID() {
+        return this.id;
+    }
+
+    @Override
     public long getCreationTime() {
         return creationTime;
     }

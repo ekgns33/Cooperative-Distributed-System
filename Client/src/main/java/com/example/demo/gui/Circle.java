@@ -49,6 +49,11 @@ public class Circle implements Figure {
     }
 
     @Override
+    public int getID() {
+        return this.id;
+    }
+
+    @Override
     public long getCreationTime() {
         return creationTime;
     }
@@ -120,7 +125,7 @@ public class Circle implements Figure {
 
     @Override
     public String getInfo() {
-        StringBuilder ret  = new StringBuilder("");
+        StringBuilder ret = new StringBuilder("");
         ret.append("1_");
         ret.append(creationTime);
         ret.append("_");

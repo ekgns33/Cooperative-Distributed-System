@@ -5,6 +5,7 @@ import com.example.demo.Message;
 import java.awt.*;
 
 public interface Figure extends Comparable<Figure>{
+    int getID();
     long getCreationTime();
     void draw(Graphics g);
     void setEndPoint(Point p);
