@@ -137,6 +137,7 @@ public class Text implements Figure {
         ret.append("_");
         ret.append(y2);
         ret.append("_");
+        ret.append(text);
         return ret.toString();
     }
 }
