@@ -9,12 +9,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.*;
 import java.util.HashMap;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Board extends JFrame {
     int curButtonIdx;
@@ -323,8 +321,7 @@ public class Board extends JFrame {
     private class LoadButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO: LOAD
-//            load();
+            load();
         }
     }
 
