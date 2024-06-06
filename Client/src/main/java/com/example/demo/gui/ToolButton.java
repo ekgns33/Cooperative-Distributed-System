@@ -5,22 +5,34 @@ import java.awt.*;
 
 public class ToolButton extends JButton {
     Color baseColor = new Color(0xededed);
-    Color pressColor= new Color(0xcbcbcb);
+    //    Color baseColor = new Color(0xF5F5F5); // bg color
+    Color pressColor = new Color(0xcbcbcb);
     Color rolloverColor = new Color(0xe2e2e2);
     Color selectedColor = new Color(0xd7d7d7);
     String imagePath = null;
     boolean selected = false;
+    final int margin = 10;
+    int type, lineWidth = 1;
 
-    public ToolButton() {
+    public ToolButton(int type, Dimension size) {
         super();
-        init();
+        init(size);
+        this.type = type;
     }
 
-    void init() {
+    void init(Dimension size) {
         setFocusPainted(false);
         setContentAreaFilled(false);
         setBorderPainted(false);
         setOpaque(false);
+        setPreferredSize(size);
+        setMaximumSize(size);
+        setMinimumSize(size);
+    }
+
+    void setLineWidth(int lineWidth) {
+        this.lineWidth = lineWidth;
+        repaint();
     }
 
     void toggle() {
@@ -43,6 +55,18 @@ public class ToolButton extends JButton {
             g2d.setColor(baseColor);
         }
         g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+        g2d.setColor(Color.black);
+        if (type == 0) {
+            g2d.setStroke(new BasicStroke(lineWidth));
+            g2d.drawOval(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+        } else if (type == 1) {
+            g2d.setStroke(new BasicStroke(lineWidth));
+            g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+        } else if (type == 2) {
+            g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.drawLine(margin, margin, getWidth() - margin, getHeight() - margin);
+        }
+
 
 //        if (getModel().isPressed()) {
 //            g2d.setColor(pressColor);
