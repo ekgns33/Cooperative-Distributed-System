@@ -135,7 +135,6 @@ public class Board extends JFrame {
         buttonPanel.add(line);
 
         // 선 굵기 버튼
-
         lineWidthButton = new ToolButton[6];
         for (int i = 1; i <= 5; i++) {
             lineWidthButton[i] = new ToolButton(2, size);
@@ -244,14 +243,15 @@ public class Board extends JFrame {
                         if (!lockResult.isValue()) {
                             return;
                         }
-                        curFigure = selectedFigure;
                         if (curButtonIdx == 4) {
-                            curFigure.setLineWidth(curLineWidth);
+                            selectedFigure.setLineWidth(curLineWidth);
                         } else if (curButtonIdx == 5) {
-                            curFigure.setLineColor(curColorIdx);
+                            selectedFigure.setLineColor(curColorIdx);
                         } else if (curButtonIdx == 6) {
-                            curFigure.setFillColor(curColorIdx);
+                            selectedFigure.setFillColor(curColorIdx);
                         }
+                        StompClient.send(selectedFigure.getMessage());
+                        StompClient.send(Message.unlock(selectedFigure.getID()));
                     }
                 } catch (NullPointerException err) {
                     err.printStackTrace();
@@ -261,7 +261,6 @@ public class Board extends JFrame {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     err.printStackTrace();
                 }
-                System.out.println("Main");
             }
 
             @Override
@@ -273,7 +272,6 @@ public class Board extends JFrame {
                     }
                     Text textFigure = (Text) curFigure;
                     textFigure.setText(inputText);
-                    textFigure.isDrawing = false;
                 }
 
                 if (curFigure != null) {
@@ -388,6 +386,8 @@ public class Board extends JFrame {
                 button[0].setLineWidth(curLineWidth);
                 button[1].setLineWidth(curLineWidth);
                 button[2].setLineWidth(curLineWidth);
+                button[5].setLineWidth(curLineWidth);
+                button[6].setLineWidth(curLineWidth);
             }
         }
     }
@@ -406,6 +406,7 @@ public class Board extends JFrame {
                 colorButton[curColorIdx].toggle();
                 colorButton[next].toggle();
                 curColorIdx = next;
+                button[5].setColor(colorList[curColorIdx]);
             }
         }
     }
