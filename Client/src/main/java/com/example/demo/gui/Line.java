@@ -59,7 +59,7 @@ public class Line implements Figure {
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setStroke(new BasicStroke(lineWidth));
+        g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
         g.setColor(colorList[lineColorIdx]);
         g.drawLine(x, y, x2, y2);
