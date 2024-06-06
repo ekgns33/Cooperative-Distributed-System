@@ -5,36 +5,42 @@ import com.example.demo.stomp_client.EnterService;
 import com.example.demo.stomp_client.StompClient;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.nio.file.*;
-import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Board extends JFrame {
-    int curButtonIdx;
-    JButton[] button, colorButton;
-    JPanel colorPanel;
+    ToolButton[] button, lineWidthButton;
+    ColorButton[] colorButton;
+    JPanel buttonPanel;
     Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED
     };
     String[] buttonText = {
             "원", "사각형", "선", "텍스트",
             "선 굵기", "선 색상", "색 채우기",
             "저장", "불러오기"
     };
-    int curColorIdx;
+    int curButtonIdx = 0;
+    int curColorIdx = 0;
     IDGenerator idGenerator;
-    HashMap<Integer, Figure> figureMap;
+    ConcurrentMap<Integer, Figure> figureMap;
     PriorityQueue<Figure> figures;
     Figure curFigure;
     int curID, curLineWidth = 1;
     JLabel noticeLabel = new JLabel("");
+    private final Object lock = new Object();
+    BooleanWrapper lockResult = new BooleanWrapper(false);
 
     public Board(String id, String ip, int port) {
         try {
@@ -54,7 +60,6 @@ public class Board extends JFrame {
         });
         setLocationRelativeTo(null);
 
-        colorPanelInit();
         buttonInit();
         boardInit();
         try {
@@ -65,10 +70,10 @@ public class Board extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-        figureMap = new HashMap<>();
+        figureMap = new ConcurrentHashMap<>();
         figures = new PriorityQueue<>();
 
-        StompClient.subscribe(figureMap, figures, noticeLabel);
+        StompClient.subscribe(figureMap, figures, noticeLabel, lock, lockResult);
         StompClient.send(Message.enterRoom(id));
 
         EnterService enterService = new EnterService();
@@ -100,59 +105,77 @@ public class Board extends JFrame {
     }
 
     private void buttonInit() {
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
+        buttonPanel = new JPanel();
         JPanel notice = new JPanel();
         JPanel panel = new JPanel();
-        JPanel figureTypePanel = new JPanel(new GridLayout(2, 2));
-        JPanel figureModifyPanel = new JPanel(new GridLayout(1, 5));
-        JPanel figureValuePanel = new JPanel(new GridLayout(2, 1));
 
-        button = new JButton[buttonText.length];
+        Dimension size = new Dimension(40, 40);
 
         ButtonListener buttonListener = new ButtonListener();
         SaveButtonListener saveButtonListener = new SaveButtonListener();
         LoadButtonListener loadButtonListener = new LoadButtonListener();
+        LineWidthButtonListener lineWidthButtonListener = new LineWidthButtonListener();
+        ColorButtonListener colorButtonListener = new ColorButtonListener();
 
-
+        button = new ToolButton[buttonText.length];
         for (int i = 0; i < button.length; i++) {
-            button[i] = new JButton(buttonText[i]);
-            if(i < 7) {
+            button[i] = new ToolButton(i, size);
+            if (i < 7) {
                 button[i].addActionListener(buttonListener);
             }
-            button[i].setFocusPainted(false);
-            if (i < 4) {
-                figureTypePanel.add(button[i]);
-            } else {
-                figureModifyPanel.add(button[i]);
-            }
+            buttonPanel.add(button[i]);
         }
         button[7].addActionListener(saveButtonListener);
         button[8].addActionListener(loadButtonListener);
 
+        // 구분선
+        JPanel line = new JPanel();
+        line.setBackground(new Color(0xE6E6E6));
+        line.setPreferredSize(new Dimension(1, 42));
+        buttonPanel.add(line);
 
-        curButtonIdx = 0;
-        button[curButtonIdx].setEnabled(false);
+        // 선 굵기 버튼
 
-        JSlider slider;
-        slider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
-        slider.setMajorTickSpacing(1);
-        slider.setMinorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        slider.addChangeListener(new SliderListener());
+        lineWidthButton = new ToolButton[6];
+        for (int i = 1; i <= 5; i++) {
+            lineWidthButton[i] = new ToolButton(2, size);
+            lineWidthButton[i].setLineWidth(i);
+            lineWidthButton[i].addActionListener(lineWidthButtonListener);
+            buttonPanel.add(lineWidthButton[i]);
+        }
 
-        figureValuePanel.add(colorPanel);
-        figureValuePanel.add(slider);
+        // 구분선
+        line = new JPanel();
+        line.setBackground(new Color(0xE6E6E6));
+        line.setPreferredSize(new Dimension(1, 42));
+        buttonPanel.add(line);
+
+        size = new Dimension(32, 32);
+
+        // 색상 버튼
+        colorButton = new ColorButton[colorList.length];
+        for (int i = 0; i < colorList.length; i++) {
+            colorButton[i] = new ColorButton(colorList[i]);
+            colorButton[i].setPreferredSize(size);
+            colorButton[i].setMaximumSize(size);
+            colorButton[i].setMinimumSize(size);
+            colorButton[i].addActionListener(colorButtonListener);
+            buttonPanel.add(colorButton[i]);
+        }
+
+        button[curButtonIdx].toggle();
+        lineWidthButton[curLineWidth].toggle();
+        colorButton[curColorIdx].toggle();
 
         panel.setLayout(new BorderLayout());
+        buttonPanel.setBackground(new Color(0xF5F5F5));
+        Border bottomBorder = new MatteBorder(0, 0, 1, 0, new Color(0xE6E6E6));
+        buttonPanel.setBorder(bottomBorder);
 
         noticeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         noticeLabel.setVerticalAlignment(SwingConstants.CENTER);
         notice.add(noticeLabel);
 
-        buttonPanel.add(figureTypePanel);
-        buttonPanel.add(figureModifyPanel);
-        buttonPanel.add(figureValuePanel);
         panel.add(buttonPanel, BorderLayout.NORTH);
         panel.add(notice, BorderLayout.CENTER);
         add(panel, BorderLayout.NORTH);
@@ -182,33 +205,47 @@ public class Board extends JFrame {
                 try {
                     if (curButtonIdx == 0) {
                         curID = idGenerator.getID();
+                        StompClient.send(Message.tryLock(curID));
                         curFigure = new Circle(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 1) {
                         curID = idGenerator.getID();
+                        StompClient.send(Message.tryLock(curID));
                         curFigure = new Rect(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 2) {
                         curID = idGenerator.getID();
+                        StompClient.send(Message.tryLock(curID));
                         curFigure = new Line(curID, e.getX(), e.getY(), curLineWidth, curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
                     } else if (curButtonIdx == 3) {
                         curID = idGenerator.getID();
+                        StompClient.send(Message.tryLock(curID));
                         curFigure = new Text(curID, e.getX(), e.getY(), curColorIdx);
                         figureMap.put(curID, curFigure);
                         figures.add(curFigure);
                     } else {
+                        Figure selectedFigure = null;
                         for (Figure figure : figures) {
                             if (figure.contains(e.getPoint())) {
-                                curFigure = figure;
+                                selectedFigure = figure;
                             }
                         }
-                        if (curFigure == null) {
-                            // Do nothing
-                        } else if (curButtonIdx == 4) {
+                        if (selectedFigure == null) {
+                            return;
+                        }
+                        synchronized (lock) {
+                            StompClient.send(Message.tryLock(selectedFigure.getID()));
+                            lock.wait();
+                        }
+                        if (!lockResult.isValue()) {
+                            return;
+                        }
+                        curFigure = selectedFigure;
+                        if (curButtonIdx == 4) {
                             curFigure.setLineWidth(curLineWidth);
                         } else if (curButtonIdx == 5) {
                             curFigure.setLineColor(curColorIdx);
@@ -224,6 +261,7 @@ public class Board extends JFrame {
                             "Error", JOptionPane.ERROR_MESSAGE);
                     err.printStackTrace();
                 }
+                System.out.println("Main");
             }
 
             @Override
@@ -240,6 +278,7 @@ public class Board extends JFrame {
 
                 if (curFigure != null) {
                     StompClient.send(curFigure.getMessage());
+                    StompClient.send(Message.unlock(curFigure.getID()));
                     curFigure = null;
                 }
             }
@@ -266,22 +305,6 @@ public class Board extends JFrame {
         timer.start();
     }
 
-    private void colorPanelInit() {
-        colorPanel = new JPanel(new GridLayout(2, 6));
-        colorButton = new JButton[12];
-        curColorIdx = 0;
-        ColorButtonListener colorButtonListener = new ColorButtonListener();
-        for (int i = 0; i < colorButton.length; i++) {
-            colorButton[i] = new JButton();
-            colorButton[i].setFocusPainted(false);
-            colorButton[i].setBackground(colorList[i]);
-            colorButton[i].addActionListener(colorButtonListener);
-            colorPanel.add(colorButton[i]);
-        }
-        colorButton[curColorIdx].setEnabled(false);
-        colorButton[curColorIdx].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-    }
-
     private void save() {
         PriorityQueue<Figure> capture = new PriorityQueue<>(figures);
         String filePath = "save.txt";
@@ -289,7 +312,7 @@ public class Board extends JFrame {
             while (!capture.isEmpty()) {
                 String element = capture.poll().getInfo();
                 writer.write(element);
-                if(!capture.isEmpty())
+                if (!capture.isEmpty())
                     writer.newLine();
             }
         } catch (IOException e) {
@@ -298,16 +321,21 @@ public class Board extends JFrame {
         System.out.println("[Log] Save complete");
     }
 
-    private class ButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            button[curButtonIdx].setEnabled(true);
-            for (int i = 0; i < button.length; i++) {
-                if (e.getSource() == button[i]) {
-                    button[i].setEnabled(false);
-                    curButtonIdx = i;
+    private void load() {
+        String filePath = "save.txt";
+        Path path = Paths.get(filePath);
+
+        if (Files.exists(path)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
                 }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
+            System.out.println("[Log] Load complete");
+        } else {
+            System.out.println("[Log] File does not exist");
         }
     }
 
@@ -325,26 +353,60 @@ public class Board extends JFrame {
         }
     }
 
-    private class ColorButtonListener implements ActionListener {
+    private class ButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            colorButton[curColorIdx].setEnabled(true);
-            colorButton[curColorIdx].setBorder(null);
-            for (int i = 0; i < colorButton.length; i++) {
-                if (e.getSource() == colorButton[i]) {
-                    colorButton[i].setEnabled(false);
-                    colorButton[i].setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
-                    curColorIdx = i;
+            int next = 0;
+            for (int i = 0; i < button.length; i++) {
+                if (e.getSource() == button[i]) {
+                    next = i;
+                    break;
                 }
+            }
+            if (next != curButtonIdx) {
+                button[curButtonIdx].toggle();
+                button[next].toggle();
+                curButtonIdx = next;
             }
         }
     }
 
-    private class SliderListener implements ChangeListener {
+    private class LineWidthButtonListener implements ActionListener {
         @Override
-        public void stateChanged(ChangeEvent e) {
-            JSlider source = (JSlider) e.getSource();
-            curLineWidth = source.getValue();
+        public void actionPerformed(ActionEvent e) {
+            int next = 0;
+            for (int i = 1; i <= 5; i++) {
+                if (e.getSource() == lineWidthButton[i]) {
+                    next = i;
+                    break;
+                }
+            }
+            if (next != curLineWidth) {
+                lineWidthButton[curLineWidth].toggle();
+                lineWidthButton[next].toggle();
+                curLineWidth = next;
+                button[0].setLineWidth(curLineWidth);
+                button[1].setLineWidth(curLineWidth);
+                button[2].setLineWidth(curLineWidth);
+            }
+        }
+    }
+
+    private class ColorButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int next = 0;
+            for (int i = 0; i < colorButton.length; i++) {
+                if (e.getSource() == colorButton[i]) {
+                    next = i;
+                    break;
+                }
+            }
+            if (next != curColorIdx) {
+                colorButton[curColorIdx].toggle();
+                colorButton[next].toggle();
+                curColorIdx = next;
+            }
         }
     }
 }
