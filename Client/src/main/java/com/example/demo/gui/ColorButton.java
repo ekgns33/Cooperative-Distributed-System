@@ -17,8 +17,8 @@ public class ColorButton extends JButton {
     public ColorButton(Color color) {
         super();
         this.color = color;
-        this.pressColor = mixBlack(color, 0.3);
-        this.rolloverColor = mixWhite(color, 0.3);
+        this.pressColor = mixBlack(color, 0.5);
+        this.rolloverColor = mixWhite(color, 0.5);
         init();
     }
 
