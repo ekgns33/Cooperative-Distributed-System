@@ -51,8 +51,7 @@ public class ToolButton extends JButton {
     }
 
     void setLineWidth(int lineWidth) {
-//        this.lineWidth = lineWidth;
-        repaint();
+        this.lineWidth = lineWidth;
     }
 
     void setColor(Color color) {

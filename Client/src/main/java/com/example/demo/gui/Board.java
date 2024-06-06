@@ -383,11 +383,6 @@ public class Board extends JFrame {
                 lineWidthButton[curLineWidth].toggle();
                 lineWidthButton[next].toggle();
                 curLineWidth = next;
-                button[0].setLineWidth(curLineWidth);
-                button[1].setLineWidth(curLineWidth);
-                button[2].setLineWidth(curLineWidth);
-                button[5].setLineWidth(curLineWidth);
-                button[6].setLineWidth(curLineWidth);
             }
         }
     }
