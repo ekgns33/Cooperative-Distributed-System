@@ -6,15 +6,16 @@ import java.awt.*;
 
 public class Text implements Figure {
     public final Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED,
             null
     };
 
     public int id, x, y, x2, y2, fontSize, lineColorIdx;
     public long creationTime;
-    public boolean isDrawing;
     public String text;
     private FontMetrics fontMetrics;
 
@@ -25,7 +26,6 @@ public class Text implements Figure {
         this.fontSize = 0;
         this.lineColorIdx = lineColor;
         this.creationTime = System.currentTimeMillis();
-        this.isDrawing = true;
         this.text = "Sample Text";
     }
 
@@ -38,7 +38,6 @@ public class Text implements Figure {
         this.fontSize = fontSize;
         this.lineColorIdx = lineColorIdx;
         this.creationTime = creationTime;
-        this.isDrawing = false;
         this.text = text;
     }
 
@@ -50,7 +49,6 @@ public class Text implements Figure {
         this.fontSize = fontSize;
         this.lineColorIdx = lineColorIdx;
         this.creationTime = creationTime;
-        this.isDrawing = false;
         this.text = text;
     }
 
@@ -71,11 +69,6 @@ public class Text implements Figure {
         Font font = g.getFont().deriveFont((float) fontSize);
         g.setFont(font);
         fontMetrics = g.getFontMetrics(font);
-        if (isDrawing) {
-            g.setColor(Color.BLACK);
-            g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
-            g.drawRect(Math.min(x, x2), Math.min(y, y2), Math.abs(x2 - x), fontSize);
-        }
         g.setColor(colorList[lineColorIdx]);
         g2d.setStroke(new BasicStroke(1));
         g.drawString(text, Math.min(x, x2), Math.max(y, y2));

@@ -6,9 +6,11 @@ import java.awt.*;
 
 public class Circle implements Figure {
     public final Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED,
             null
     };
 
@@ -21,7 +23,7 @@ public class Circle implements Figure {
         this.y = this.y2 = y;
         this.lineWidth = lineWidth;
         this.lineColorIdx = lineColorIdx;
-        this.fillColorIdx = 12;
+        this.fillColorIdx = 10;
         this.creationTime = System.currentTimeMillis();
     }
 
@@ -96,7 +98,7 @@ public class Circle implements Figure {
     @Override
     public void setFillColor(int fillColorIdx) {
         if (this.fillColorIdx == fillColorIdx)
-            this.fillColorIdx = 12;
+            this.fillColorIdx = 10;
         else
             this.fillColorIdx = fillColorIdx;
     }

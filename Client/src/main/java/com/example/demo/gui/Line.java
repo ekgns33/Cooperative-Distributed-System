@@ -6,9 +6,11 @@ import java.awt.*;
 
 public class Line implements Figure {
     public final Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED,
             null
     };
 
