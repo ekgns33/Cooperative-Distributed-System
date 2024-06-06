@@ -9,6 +9,7 @@ import java.io.IOException;
 
 public class ColorButton extends JButton {
     Color color, pressColor, rolloverColor;
+    Color selectedColor = new Color(0xd7d7d7);
     String imagePath = null;
     boolean selected = false;
     final int thickness = 5;
@@ -16,8 +17,8 @@ public class ColorButton extends JButton {
     public ColorButton(Color color) {
         super();
         this.color = color;
-        this.pressColor = mixWhite(color, 0.35);
-        this.rolloverColor = mixWhite(color, 0.7);
+        this.pressColor = mixBlack(color, 0.3);
+        this.rolloverColor = mixWhite(color, 0.3);
         init();
     }
 
@@ -39,7 +40,7 @@ public class ColorButton extends JButton {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (selected) {
-            g2d.setColor(new Color(0xc6c6c6));
+            g2d.setColor(selectedColor);
             g2d.fillOval(0, 0, getWidth(), getHeight());
         }
 
@@ -47,7 +48,7 @@ public class ColorButton extends JButton {
             g2d.setColor(pressColor);
         } else if (getModel().isRollover()) {
             g2d.setColor(rolloverColor);
-        }else {
+        } else {
             g2d.setColor(color);
         }
         g2d.fillOval(thickness, thickness, getWidth() - 2 * thickness, getHeight() - 2 * thickness);
@@ -64,6 +65,14 @@ public class ColorButton extends JButton {
         }
 
         g2d.dispose();
+    }
+
+    public static Color mixBlack(Color color, double ratio) {
+        int red = (int) (color.getRed() * (1 - ratio));
+        int green = (int) (color.getGreen() * (1 - ratio));
+        int blue = (int) (color.getBlue() * (1 - ratio));
+
+        return new Color(red, green, blue);
     }
 
     public static Color mixWhite(Color color, double ratio) {
