@@ -130,7 +130,7 @@ public class Board extends JFrame {
 
         // 구분선
         JPanel line = new JPanel();
-        line.setBackground(new Color(0xE6E6E6));
+        line.setBackground(new Color(0xcbcbcb));
         line.setPreferredSize(new Dimension(1, 42));
         buttonPanel.add(line);
 
@@ -145,7 +145,7 @@ public class Board extends JFrame {
 
         // 구분선
         line = new JPanel();
-        line.setBackground(new Color(0xE6E6E6));
+        line.setBackground(new Color(0xcbcbcb));
         line.setPreferredSize(new Dimension(1, 42));
         buttonPanel.add(line);
 
@@ -173,6 +173,7 @@ public class Board extends JFrame {
 
         noticeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         noticeLabel.setVerticalAlignment(SwingConstants.CENTER);
+        noticeLabel.setBorder(bottomBorder);
         notice.add(noticeLabel);
 
         panel.add(buttonPanel, BorderLayout.NORTH);
