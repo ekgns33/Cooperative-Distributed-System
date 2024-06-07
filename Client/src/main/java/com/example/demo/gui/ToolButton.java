@@ -9,7 +9,7 @@ public class ToolButton extends JButton {
     Color color = Color.BLACK, beforeColor = Color.RED;
     Color baseColor = new Color(0xededed);
     //    Color baseColor = new Color(0xF5F5F5); // bg color
-    Color pressColor = new Color(0xcbcbcb);
+    Color pressColor = new Color(0xc6c6c6);
     Color rolloverColor = new Color(0xe2e2e2);
     Color selectedColor = new Color(0xd7d7d7);
     String imagePath = null;
@@ -30,7 +30,7 @@ public class ToolButton extends JButton {
                     repaint();
                 }
             });
-            if(type == 6) {
+            if (type == 6) {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
@@ -70,10 +70,10 @@ public class ToolButton extends JButton {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if (selected) {
-            g2d.setColor(selectedColor);
-        } else if (getModel().isPressed()) {
+        if (getModel().isPressed()) {
             g2d.setColor(pressColor);
+        } else if (selected) {
+            g2d.setColor(selectedColor);
         } else if (getModel().isRollover()) {
             g2d.setColor(rolloverColor);
         } else {
