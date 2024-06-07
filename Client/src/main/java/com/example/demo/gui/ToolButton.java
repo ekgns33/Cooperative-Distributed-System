@@ -16,7 +16,7 @@ public class ToolButton extends JButton {
     boolean selected = false;
     final int margin = 8;
     int type, lineWidth = 2;
-    boolean tag = false;
+    int tag = 0;
 
     public ToolButton(int type, Dimension size) {
         super();
@@ -26,16 +26,16 @@ public class ToolButton extends JButton {
             Timer timer = new Timer(1000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    tag = !tag;
+                    tag = (tag + 1) % 3;
                     repaint();
                 }
             });
-            if (type == 6) {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                }
-            }
+//            if (type == 6) {
+//                try {
+//                    Thread.sleep(200);
+//                } catch (InterruptedException e) {
+//                }
+//            }
             timer.start();
         }
     }
@@ -111,19 +111,50 @@ public class ToolButton extends JButton {
             g2d.drawLine(margin, getHeight() * 3 / 4 - 2, getWidth() - margin, getHeight() * 3 / 4 - 2);
         } else if (type == 5) {
             g2d.setStroke(new BasicStroke(lineWidth));
-            if (tag) {
+            if (tag == 0) {
                 g2d.setColor(beforeColor);
             } else {
                 g2d.setColor(color);
             }
-            g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+//            g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+            g2d.drawRect(margin, margin, getWidth() - 3 * margin, getHeight() - 3 * margin);
+            if (tag == 1)
+                g2d.setColor(beforeColor);
+            g2d.drawOval(margin * 2, margin * 2, getWidth() - 3 * margin, getHeight() - 3 * margin);
         } else if (type == 6) {
             g2d.setStroke(new BasicStroke(lineWidth));
-            if (tag) {
-                g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+            if (tag == 0) {
+                g2d.drawRect(margin, margin, getWidth() - 3 * margin, getHeight() - 3 * margin);
             } else {
-                g2d.fillRect(margin - lineWidth / 2, margin - lineWidth / 2, getWidth() - 2 * margin + lineWidth, getHeight() - 2 * margin + lineWidth);
+                g2d.fillRect(margin, margin, getWidth() - 3 * margin, getHeight() - 3 * margin);
             }
+            g2d.setColor(Color.RED);
+            if (tag == 2) {
+                g2d.fillOval(margin * 2, margin * 2, getWidth() - 3 * margin, getHeight() - 3 * margin);
+            } else {
+                g2d.drawOval(margin * 2, margin * 2, getWidth() - 3 * margin, getHeight() - 3 * margin);
+            }
+//            if (tag) {
+//                g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+//            } else {
+//                g2d.fillRect(margin - lineWidth / 2, margin - lineWidth / 2, getWidth() - 2 * margin + lineWidth, getHeight() - 2 * margin + lineWidth);
+//            }
+        } else if(type == 7){
+            g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.drawLine(margin + 2, getHeight() - 10, getWidth() - margin - 2, getHeight() - 10);
+            g2d.drawLine(margin + 2, getHeight() - 14, margin + 2, getHeight() - 10);
+            g2d.drawLine(getWidth() - margin - 2, getHeight() - 14, getWidth() - margin - 2, getHeight() - 10);
+            g2d.drawLine(getWidth() / 2, margin + 2 , getWidth() / 2, getHeight() - 16);
+            g2d.drawLine(getWidth() / 2, getHeight() - 16, getWidth() / 2 - 7, getHeight() - 23);
+            g2d.drawLine(getWidth() / 2, getHeight() - 16, getWidth() / 2 + 7, getHeight() - 23);
+        }else if (type == 8) {
+            g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.drawLine(margin + 2, getHeight() - 10, getWidth() - margin - 2, getHeight() - 10);
+            g2d.drawLine(margin + 2, getHeight() - 14, margin + 2, getHeight() - 10);
+            g2d.drawLine(getWidth() - margin - 2, getHeight() - 14, getWidth() - margin - 2, getHeight() - 10);
+            g2d.drawLine(getWidth() / 2, margin + 2 , getWidth() / 2, getHeight() - 16);
+            g2d.drawLine(getWidth() / 2, margin + 2, getWidth() / 2 - 7, margin + 9);
+            g2d.drawLine(getWidth() / 2, margin + 2, getWidth() / 2 + 7, margin + 9);
         }
 
 
