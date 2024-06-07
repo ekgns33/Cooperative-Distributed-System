@@ -138,11 +138,11 @@ public class ToolButton extends JButton {
             if (tag == 0) {
                 g2d.drawRect(margin, margin, getWidth() - 3 * margin, getHeight() - 3 * margin);
             } else {
-                g2d.fillRect(margin, margin, getWidth() - 3 * margin, getHeight() - 3 * margin);
+                g2d.fillRect(margin - 1, margin -1 , getWidth() - 3 * margin + 2, getHeight() - 3 * margin + 2);
             }
             g2d.setColor(Color.RED);
             if (tag == 2) {
-                g2d.fillOval(margin * 2, margin * 2, getWidth() - 3 * margin, getHeight() - 3 * margin);
+                g2d.fillOval(margin * 2 - 1, margin * 2 - 1, getWidth() - 3 * margin + 2, getHeight() - 3 * margin + 2);
             } else {
                 g2d.drawOval(margin * 2, margin * 2, getWidth() - 3 * margin, getHeight() - 3 * margin);
             }
