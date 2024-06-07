@@ -10,18 +10,23 @@ import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import javax.swing.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapter {
 
     private final JLabel noticeLabel;
     private final PriorityQueue<Figure> figures;
-    private final HashMap<Integer, Figure> figureMap;
+    private final ConcurrentMap<Integer, Figure> figureMap;
+    private final Object lock;
+    private BooleanWrapper lockResult;
     private boolean loadLock;
 
-    public ClientWebSocketStompSessionHandler(HashMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel) {
+    public ClientWebSocketStompSessionHandler(ConcurrentMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel, Object lock, BooleanWrapper lockResult) {
         this.figureMap = figureMap;
         this.figures = figures;
         this.noticeLabel = noticeLabel;
+        this.lock = lock;
+        this.lockResult = lockResult;
         this.loadLock = false;
     }
 
@@ -29,10 +34,8 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
     public void handleFrame(StompHeaders headers, Object payload) {
         Message message = (Message) payload;
         if (message.getStatus() == 1) {
-//            System.out.println("[Log]message received: " + message.getNickname() + " is enter");
             noticeLabel.setText(message.getNickname() + "이(가) 접속했습니다.");
         } else if (message.getStatus() == 2) {
-//            System.out.println("[Log]message received: " + message.getNickname() + " is out");
             noticeLabel.setText(message.getNickname() + "이(가) 접속을 종료했습니다.");
         } else if (message.getStatus() == 3) {
             Figure curFigure = figureMap.get(message.getId());
@@ -60,17 +63,22 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
                 figures.add(curFigure);
             }
         } else if (message.getStatus() == 4) {
+            synchronized (lock) {
+                lockResult.setValue(message.isLockResult());
+                lock.notify();
+            }
         } else if (message.getStatus() == 5) {
+            // do nothing
         } else if (message.getStatus() == 6) {
             this.loadLock = message.isLockResult();
         } else if (message.getStatus() == 7) {
             //TODO: unblock
-            
+
         } else if (message.getStatus() == 8) {
             //TODO: block
             figureMap.clear();
             figures.clear();
-            if (loadLock){
+            if (loadLock) {
                 //TODO: load data
             }
         }
