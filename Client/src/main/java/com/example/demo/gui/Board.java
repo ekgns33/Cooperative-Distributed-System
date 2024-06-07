@@ -173,7 +173,7 @@ public class Board extends JFrame {
 
         noticeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         noticeLabel.setVerticalAlignment(SwingConstants.CENTER);
-        noticeLabel.setBorder(bottomBorder);
+        notice.setBorder(bottomBorder);
         notice.add(noticeLabel);
 
         panel.add(buttonPanel, BorderLayout.NORTH);
