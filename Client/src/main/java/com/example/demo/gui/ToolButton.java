@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class ToolButton extends JButton {
     Color color = Color.BLACK, beforeColor = Color.RED;
@@ -91,17 +93,28 @@ public class ToolButton extends JButton {
             g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2d.drawLine(margin, margin, getWidth() - margin, getHeight() - margin);
         } else if (type == 3) {
-            Font font = new Font("Arial", 0, getWidth() - margin);
-            g2d.setFont(font);
-            FontMetrics metrics = g2d.getFontMetrics(font);
-            String text = "T";
+            try {
+                File fontFile = new File("./CactusClassicalSerif-Regular.ttf");
+                Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
 
-            int stringWidth = metrics.stringWidth(text);
-            int stringHeight = metrics.getHeight();
+                float fontSize = getWidth() - margin;
+                Font sizedFont = customFont.deriveFont(fontSize);
 
-            int x = (getWidth() - stringWidth) / 2;
-            int y = (getHeight() + stringHeight) / 2 - metrics.getDescent();
-            g2d.drawString(text, x, y);
+                g2d.setFont(sizedFont);
+
+                FontMetrics metrics = g2d.getFontMetrics(sizedFont);
+                String text = "T";
+
+                int stringWidth = metrics.stringWidth(text);
+                int stringHeight = metrics.getHeight();
+
+                int x = (getWidth() - stringWidth) / 2;
+                int y = (getHeight() + stringHeight) / 2 - metrics.getDescent();
+                g2d.drawString(text, x, y);
+
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
         } else if (type == 4) {
             g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2d.drawLine(margin, getHeight() / 4 + 1, getWidth() - margin, getHeight() / 4 + 1);
@@ -116,7 +129,6 @@ public class ToolButton extends JButton {
             } else {
                 g2d.setColor(color);
             }
-//            g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
             g2d.drawRect(margin, margin, getWidth() - 3 * margin, getHeight() - 3 * margin);
             if (tag == 1)
                 g2d.setColor(beforeColor);
@@ -134,11 +146,6 @@ public class ToolButton extends JButton {
             } else {
                 g2d.drawOval(margin * 2, margin * 2, getWidth() - 3 * margin, getHeight() - 3 * margin);
             }
-//            if (tag) {
-//                g2d.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
-//            } else {
-//                g2d.fillRect(margin - lineWidth / 2, margin - lineWidth / 2, getWidth() - 2 * margin + lineWidth, getHeight() - 2 * margin + lineWidth);
-//            }
         } else if(type == 7){
             g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             g2d.drawLine(margin + 2, getHeight() - 10, getWidth() - margin - 2, getHeight() - 10);
@@ -156,7 +163,6 @@ public class ToolButton extends JButton {
             g2d.drawLine(getWidth() / 2, margin + 2, getWidth() / 2 - 7, margin + 9);
             g2d.drawLine(getWidth() / 2, margin + 2, getWidth() / 2 + 7, margin + 9);
         }
-
 
         g2d.dispose();
     }
