@@ -129,7 +129,7 @@ public class Circle implements Figure {
     @Override
     public String getInfo() {
         StringBuilder ret = new StringBuilder("");
-        ret.append("1_");
+        ret.append("0_");
         ret.append(creationTime);
         ret.append("_");
         ret.append(lineWidth);

@@ -121,11 +121,11 @@ public class Text implements Figure {
     @Override
     public String getInfo() {
         StringBuilder ret  = new StringBuilder("");
-        ret.append("4_");
+        ret.append("3_");
         ret.append(creationTime);
         ret.append("_");
         ret.append(fontSize);
-        ret.append("_");
+        ret.append("_0_");
         ret.append(lineColorIdx);
         ret.append("_");
         ret.append(x);

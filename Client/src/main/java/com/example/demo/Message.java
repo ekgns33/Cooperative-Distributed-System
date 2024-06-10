@@ -51,6 +51,10 @@ public class Message {
         return new Message(6, null, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
 
+    public static Message loadStart(int id) {
+        return new Message(6, null, false, 0, 0, id, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
     public static Message loadComplete() {
         return new Message(7, null, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }

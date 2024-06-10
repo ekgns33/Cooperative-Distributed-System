@@ -41,6 +41,7 @@ public class Board extends JFrame {
     JLabel noticeLabel = new JLabel("");
     private final Object lock = new Object();
     BooleanWrapper lockResult = new BooleanWrapper(false);
+    BooleanWrapper loading = new BooleanWrapper(false);
 
     public Board(String id, String ip, int port) {
         try {
@@ -73,7 +74,7 @@ public class Board extends JFrame {
         figureMap = new ConcurrentHashMap<>();
         figures = new PriorityQueue<>();
 
-        StompClient.subscribe(figureMap, figures, noticeLabel, lock, lockResult);
+        StompClient.subscribe(figureMap, figures, noticeLabel, lock, lockResult, loading);
         StompClient.send(Message.enterRoom(id));
 
         EnterService enterService = new EnterService();
@@ -101,7 +102,6 @@ public class Board extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
-
     }
 
     private void buttonInit() {
@@ -198,6 +198,10 @@ public class Board extends JFrame {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                if (loading.isValue()) {
+                    curFigure = null;
+                    return;
+                }
                 if (curFigure != null) {
                     StompClient.send(curFigure.getMessage());
                     curFigure = null;
@@ -239,6 +243,7 @@ public class Board extends JFrame {
                         }
                         synchronized (lock) {
                             StompClient.send(Message.tryLock(selectedFigure.getID()));
+                            System.out.println("[Log]" + selectedFigure.getID() + "try lock");
                             lock.wait();
                         }
                         if (!lockResult.isValue()) {
@@ -266,19 +271,26 @@ public class Board extends JFrame {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (curButtonIdx == 3) {
-                    String inputText = JOptionPane.showInputDialog("텍스트를 입력하세요:");
-                    if (inputText == null) {
-                        inputText = "";
-                    }
-                    Text textFigure = (Text) curFigure;
-                    textFigure.setText(inputText);
-                }
-
-                if (curFigure != null) {
-                    StompClient.send(curFigure.getMessage());
-                    StompClient.send(Message.unlock(curFigure.getID()));
+                if (loading.isValue()) {
                     curFigure = null;
+                    return;
+                }
+                try {
+                    if (curButtonIdx == 3) {
+                        String inputText = JOptionPane.showInputDialog("텍스트를 입력하세요:");
+                        if (inputText == null) {
+                            inputText = "";
+                        }
+                        Text textFigure = (Text) curFigure;
+                        textFigure.setText(inputText);
+                    }
+
+                    if (curFigure != null) {
+                        StompClient.send(curFigure.getMessage());
+                        StompClient.send(Message.unlock(curFigure.getID()));
+                        curFigure = null;
+                    }
+                } catch (Exception err) {
                 }
             }
         });
@@ -286,7 +298,11 @@ public class Board extends JFrame {
         drawingPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                if (curButtonIdx < 4) {
+                if (loading.isValue()) {
+                    curFigure = null;
+                    return;
+                }
+                if (curButtonIdx < 4 && curFigure != null) {
                     curFigure.setEndPoint(e.getPoint());
                 }
             }
@@ -316,31 +332,90 @@ public class Board extends JFrame {
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
+            noticeLabel.setText("저장 중 오류가 생겼습니다.");
+            return;
         }
         System.out.println("[Log] Save complete");
+        noticeLabel.setText("저장이 완료되었습니다.");
     }
 
     private void load() {
+        try {
+            synchronized (lock) {
+                int loadLockID = idGenerator.getID();
+                StompClient.send(Message.loadStart(loadLockID));
+                lock.wait();
+            }
+        } catch (InterruptedException e) {
+            noticeLabel.setText("로드 중 오류가 발생했습니다.");
+        }
+        if (!this.lockResult.isValue()) {
+            noticeLabel.setText("로드 중 오류가 발생했습니다.");
+            return;
+        }
         String filePath = "save.txt";
         Path path = Paths.get(filePath);
 
         if (Files.exists(path)) {
+            StompClient.send(Message.loadStart(idGenerator.getID()));
             try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
+                    try {
+                        String[] words = line.split("_", 10);
+                        System.out.println(words.length);
+                        if (words.length == 10) {
+                            StompClient.send(Message.text(
+                                    3,
+                                    Long.parseLong(words[1]),
+                                    idGenerator.getID(),
+                                    Integer.parseInt(words[2]),
+                                    Integer.parseInt(words[3]),
+                                    Integer.parseInt(words[4]),
+                                    Integer.parseInt(words[5]),
+                                    Integer.parseInt(words[6]),
+                                    Integer.parseInt(words[7]),
+                                    Integer.parseInt(words[8]),
+                                    words[9]
+                            ));
+                        } else {
+                            StompClient.send(Message.figure(
+                                    Integer.parseInt(words[0]),
+                                    Long.parseLong(words[1]),
+                                    idGenerator.getID(),
+                                    Integer.parseInt(words[2]),
+                                    Integer.parseInt(words[3]),
+                                    Integer.parseInt(words[4]),
+                                    Integer.parseInt(words[5]),
+                                    Integer.parseInt(words[6]),
+                                    Integer.parseInt(words[7]),
+                                    Integer.parseInt(words[8])
+                            ));
+                        }
+                    } catch (Exception ignored) {
+                    }
                 }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
+
+            StompClient.send(Message.loadComplete());
+
             System.out.println("[Log] Load complete");
+            noticeLabel.setText("불러오기가 완료되었습니다.");
         } else {
             System.out.println("[Log] File does not exist");
+            noticeLabel.setText("저장된 데이터가 존재하지 않습니다.");
         }
     }
 
     private class SaveButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (loading.isValue()) {
+                noticeLabel.setText("로딩중입니다.");
+                return;
+            }
             save();
         }
     }
@@ -348,6 +423,10 @@ public class Board extends JFrame {
     private class LoadButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (loading.isValue()) {
+                noticeLabel.setText("로딩중입니다.");
+                return;
+            }
             load();
         }
     }

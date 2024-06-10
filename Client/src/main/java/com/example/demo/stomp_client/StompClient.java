@@ -19,8 +19,8 @@ public class StompClient {
         socketStompClient = ClientWebSocketStompConfig.getWebSocketStompClient("ws://" + ip + ":" + port + "/whiteboard");
     }
 
-    public static void subscribe(ConcurrentMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel, Object lock, BooleanWrapper lockResult) {
-        ClientWebSocketStompSessionHandler stompHandler = new ClientWebSocketStompSessionHandler(figureMap, figures, noticeLabel, lock, lockResult);
+    public static void subscribe(ConcurrentMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel, Object lock, BooleanWrapper lockResult, BooleanWrapper loading) {
+        ClientWebSocketStompSessionHandler stompHandler = new ClientWebSocketStompSessionHandler(figureMap, figures, noticeLabel, lock, lockResult, loading);
         socketStompClient.subscribe("/room", stompHandler);
         socketStompClient.subscribe("/user/room", stompHandler);
     }

@@ -108,11 +108,11 @@ public class Line implements Figure {
     @Override
     public String getInfo() {
         StringBuilder ret  = new StringBuilder("");
-        ret.append("3_");
+        ret.append("2_");
         ret.append(creationTime);
         ret.append("_");
         ret.append(lineWidth);
-        ret.append("_");
+        ret.append("_0_");
         ret.append(lineColorIdx);
         ret.append("_");
         ret.append(x);

@@ -19,24 +19,26 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
     private final ConcurrentMap<Integer, Figure> figureMap;
     private final Object lock;
     private BooleanWrapper lockResult;
-    private boolean loadLock;
+    private BooleanWrapper loading;
+    private boolean loadLock = false;
+    private boolean clearLock = false;
 
-    public ClientWebSocketStompSessionHandler(ConcurrentMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel, Object lock, BooleanWrapper lockResult) {
+    public ClientWebSocketStompSessionHandler(ConcurrentMap<Integer, Figure> figureMap, PriorityQueue<Figure> figures, JLabel noticeLabel, Object lock, BooleanWrapper lockResult, BooleanWrapper loading) {
         this.figureMap = figureMap;
         this.figures = figures;
         this.noticeLabel = noticeLabel;
         this.lock = lock;
         this.lockResult = lockResult;
-        this.loadLock = false;
+        this.loading = loading;
     }
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
         Message message = (Message) payload;
         if (message.getStatus() == 1) {
-            noticeLabel.setText(message.getNickname() + "이(가) 접속했습니다.");
+            noticeLabel.setText(message.getNickname() + "님이 접속했습니다.");
         } else if (message.getStatus() == 2) {
-            noticeLabel.setText(message.getNickname() + "이(가) 접속을 종료했습니다.");
+            noticeLabel.setText(message.getNickname() + "님이 접속을 종료했습니다.");
         } else if (message.getStatus() == 3) {
             Figure curFigure = figureMap.get(message.getId());
             if (curFigure != null) {
@@ -65,21 +67,37 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
         } else if (message.getStatus() == 4) {
             synchronized (lock) {
                 lockResult.setValue(message.isLockResult());
-                lock.notify();
+                this.loadLock = message.isLockResult();
+                if(!this.loadLock) {
+                    lock.notify();
+                }
+                if(this.clearLock){
+                    lock.notify();
+                }
             }
-        } else if (message.getStatus() == 5) {
-            // do nothing
         } else if (message.getStatus() == 6) {
-            this.loadLock = message.isLockResult();
+            synchronized (lock) {
+                this.loadLock = message.isLockResult();
+                lockResult.setValue(message.isLockResult());
+            }
         } else if (message.getStatus() == 7) {
-            //TODO: unblock
-
+            loading.setValue(false);
+            this.clearLock = false;
+            this.loadLock = false;
         } else if (message.getStatus() == 8) {
-            //TODO: block
-            figureMap.clear();
-            figures.clear();
-            if (loadLock) {
-                //TODO: load data
+            loading.setValue(true);
+            synchronized (lock) {
+                figureMap.clear();
+                figures.clear();
+                this.clearLock = true;
+                if(!message.isLockResult()) {
+                    System.out.println("no lock");
+                    lock.notify();
+                }
+                if (this.loadLock) {
+                    System.out.println("get lock");
+                    lock.notify();
+                }
             }
         }
 
