@@ -10,7 +10,6 @@ import java.io.IOException;
 public class ColorButton extends JButton {
     Color color, pressColor, rolloverColor;
     Color selectedColor = new Color(0xd7d7d7);
-    String imagePath = null;
     boolean selected = false;
     final int thickness = 5;
 
@@ -52,17 +51,6 @@ public class ColorButton extends JButton {
             g2d.setColor(color);
         }
         g2d.fillOval(thickness, thickness, getWidth() - 2 * thickness, getHeight() - 2 * thickness);
-
-
-        if (imagePath != null) {
-            File dir = new File(imagePath);
-            try {
-                BufferedImage img = ImageIO.read(dir);
-                g2d.drawImage(img, 0, 0, getWidth(), getHeight(), this);
-            } catch (IOException e) {
-                System.err.println("Image Path Err");
-            }
-        }
 
         g2d.dispose();
     }
