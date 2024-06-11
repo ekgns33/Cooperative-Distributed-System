@@ -81,7 +81,7 @@ public class StompController {
             sendingOperations.convertAndSend(destination, message);
 
             messageRepository.deleteAll();
-            lockService.clearLock();
+            lockService.unlockForAllObjects();
         }
         else if (message.getStatus() == 7) {
             log.info("client ready!!. message ={}", message);

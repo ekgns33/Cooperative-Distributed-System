@@ -30,7 +30,7 @@ public class LockService {
     /*
      * Must acquire entire locks for drawing Objects!
      * */
-    public synchronized void clearLock() {
+    public synchronized void unlockForAllObjects() {
         for (AtomicBoolean lock : locks) {
             lock.set(false);
         }
