@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString
 public class Message {
-    int status; // 1: 입장, 2: 퇴장, 3: 메시지, 4: lock, 5: unlock
+    int status; // 1: 입장, 2: 퇴장, 3: 메시지, 4: lock, 5: unlock, 6: clear(block), 7: 로드 메시지 전송 완료
     String nickname; // 유저 닉네임
     boolean lockResult; // lock 결과
 
@@ -45,6 +45,18 @@ public class Message {
 
     public static Message unlock(int id) {
         return new Message(5, null, false, 0, 0, id, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
+    public static Message loadStart() {
+        return new Message(6, null, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
+    public static Message loadStart(int id) {
+        return new Message(6, null, false, 0, 0, id, 0, 0, 0, 0, 0, 0, 0, null);
+    }
+
+    public static Message loadComplete() {
+        return new Message(7, null, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null);
     }
 }
 

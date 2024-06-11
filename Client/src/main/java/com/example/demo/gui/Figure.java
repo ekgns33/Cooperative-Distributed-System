@@ -5,6 +5,7 @@ import com.example.demo.Message;
 import java.awt.*;
 
 public interface Figure extends Comparable<Figure>{
+    int getID();
     long getCreationTime();
     void draw(Graphics g);
     void setEndPoint(Point p);
@@ -13,4 +14,5 @@ public interface Figure extends Comparable<Figure>{
     void setFillColor(int fillColor);
     boolean contains(Point p);
     Message getMessage();
+    String getInfo();
 }

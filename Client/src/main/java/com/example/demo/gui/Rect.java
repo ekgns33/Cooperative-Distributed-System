@@ -6,9 +6,11 @@ import java.awt.*;
 
 public class Rect implements Figure {
     public final Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED,
             null
     };
 
@@ -21,7 +23,7 @@ public class Rect implements Figure {
         this.y = this.y2 = y;
         this.lineWidth = lineWidth;
         this.lineColorIdx = lineColorIdx;
-        this.fillColorIdx = 12;
+        this.fillColorIdx = 10;
         this.creationTime = System.currentTimeMillis();
     }
 
@@ -49,6 +51,11 @@ public class Rect implements Figure {
     }
 
     @Override
+    public int getID() {
+        return this.id;
+    }
+
+    @Override
     public long getCreationTime() {
         return creationTime;
     }
@@ -61,6 +68,7 @@ public class Rect implements Figure {
         int height = Math.abs(y2 - y);
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setStroke(new BasicStroke(lineWidth));
 
         if (colorList[fillColorIdx] != null) {
@@ -90,7 +98,7 @@ public class Rect implements Figure {
     @Override
     public void setFillColor(int fillColorIdx) {
         if (this.fillColorIdx == fillColorIdx)
-            this.fillColorIdx = 12;
+            this.fillColorIdx = 10;
         else
             this.fillColorIdx = fillColorIdx;
     }
@@ -109,5 +117,27 @@ public class Rect implements Figure {
     @Override
     public Message getMessage() {
         return Message.figure(1, creationTime, id, lineWidth, fillColorIdx, lineColorIdx, x, y, x2, y2);
+    }
+
+    @Override
+    public String getInfo() {
+        StringBuilder ret  = new StringBuilder("");
+        ret.append("1_");
+        ret.append(creationTime);
+        ret.append("_");
+        ret.append(lineWidth);
+        ret.append("_");
+        ret.append(fillColorIdx);
+        ret.append("_");
+        ret.append(lineColorIdx);
+        ret.append("_");
+        ret.append(x);
+        ret.append("_");
+        ret.append(y);
+        ret.append("_");
+        ret.append(x2);
+        ret.append("_");
+        ret.append(y2);
+        return ret.toString();
     }
 }

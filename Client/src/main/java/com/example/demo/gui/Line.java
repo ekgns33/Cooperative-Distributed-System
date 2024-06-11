@@ -6,9 +6,11 @@ import java.awt.*;
 
 public class Line implements Figure {
     public final Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED,
             null
     };
 
@@ -45,6 +47,12 @@ public class Line implements Figure {
         this.creationTime = creationTime;
     }
 
+    @Override
+    public int getID() {
+        return this.id;
+    }
+
+    @Override
     public long getCreationTime() {
         return creationTime;
     }
@@ -52,7 +60,8 @@ public class Line implements Figure {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(lineWidth));
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setStroke(new BasicStroke(lineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
         g.setColor(colorList[lineColorIdx]);
         g.drawLine(x, y, x2, y2);
@@ -94,6 +103,26 @@ public class Line implements Figure {
     @Override
     public Message getMessage() {
         return Message.figure(2, creationTime, id, lineWidth, 0, lineColorIdx, x, y, x2, y2);
+    }
+
+    @Override
+    public String getInfo() {
+        StringBuilder ret  = new StringBuilder("");
+        ret.append("2_");
+        ret.append(creationTime);
+        ret.append("_");
+        ret.append(lineWidth);
+        ret.append("_0_");
+        ret.append(lineColorIdx);
+        ret.append("_");
+        ret.append(x);
+        ret.append("_");
+        ret.append(y);
+        ret.append("_");
+        ret.append(x2);
+        ret.append("_");
+        ret.append(y2);
+        return ret.toString();
     }
 }
 

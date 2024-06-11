@@ -6,15 +6,16 @@ import java.awt.*;
 
 public class Text implements Figure {
     public final Color[] colorList = {
-            Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY,
-            Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA,
-            Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW,
+            Color.BLACK, Color.GRAY,
+            Color.BLUE, Color.CYAN,
+            Color.GREEN, Color.YELLOW,
+            Color.ORANGE, Color.PINK,
+            Color.MAGENTA, Color.RED,
             null
     };
 
     public int id, x, y, x2, y2, fontSize, lineColorIdx;
     public long creationTime;
-    public boolean isDrawing;
     public String text;
     private FontMetrics fontMetrics;
 
@@ -25,7 +26,6 @@ public class Text implements Figure {
         this.fontSize = 0;
         this.lineColorIdx = lineColor;
         this.creationTime = System.currentTimeMillis();
-        this.isDrawing = true;
         this.text = "Sample Text";
     }
 
@@ -38,7 +38,6 @@ public class Text implements Figure {
         this.fontSize = fontSize;
         this.lineColorIdx = lineColorIdx;
         this.creationTime = creationTime;
-        this.isDrawing = false;
         this.text = text;
     }
 
@@ -50,8 +49,12 @@ public class Text implements Figure {
         this.fontSize = fontSize;
         this.lineColorIdx = lineColorIdx;
         this.creationTime = creationTime;
-        this.isDrawing = false;
         this.text = text;
+    }
+
+    @Override
+    public int getID() {
+        return this.id;
     }
 
     @Override
@@ -62,14 +65,10 @@ public class Text implements Figure {
     @Override
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Font font = g.getFont().deriveFont((float) fontSize);
         g.setFont(font);
         fontMetrics = g.getFontMetrics(font);
-        if (isDrawing) {
-            g.setColor(Color.BLACK);
-            g2d.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
-            g.drawRect(Math.min(x, x2), Math.min(y, y2), Math.abs(x2 - x), fontSize);
-        }
         g.setColor(colorList[lineColorIdx]);
         g2d.setStroke(new BasicStroke(1));
         g.drawString(text, Math.min(x, x2), Math.max(y, y2));
@@ -117,5 +116,27 @@ public class Text implements Figure {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public String getInfo() {
+        StringBuilder ret  = new StringBuilder("");
+        ret.append("3_");
+        ret.append(creationTime);
+        ret.append("_");
+        ret.append(fontSize);
+        ret.append("_0_");
+        ret.append(lineColorIdx);
+        ret.append("_");
+        ret.append(x);
+        ret.append("_");
+        ret.append(y);
+        ret.append("_");
+        ret.append(x2);
+        ret.append("_");
+        ret.append(y2);
+        ret.append("_");
+        ret.append(text);
+        return ret.toString();
     }
 }
