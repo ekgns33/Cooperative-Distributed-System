@@ -67,18 +67,18 @@ public class ClientWebSocketStompSessionHandler extends StompSessionHandlerAdapt
         } else if (message.getStatus() == 4) {
             synchronized (lock) {
                 lockResult.setValue(message.isLockResult());
+                lock.notify();
+            }
+        } else if (message.getStatus() == 6) {
+            synchronized (lock) {
                 this.loadLock = message.isLockResult();
+                lockResult.setValue(message.isLockResult());
                 if(!this.loadLock) {
                     lock.notify();
                 }
                 if(this.clearLock){
                     lock.notify();
                 }
-            }
-        } else if (message.getStatus() == 6) {
-            synchronized (lock) {
-                this.loadLock = message.isLockResult();
-                lockResult.setValue(message.isLockResult());
             }
         } else if (message.getStatus() == 7) {
             loading.setValue(false);
