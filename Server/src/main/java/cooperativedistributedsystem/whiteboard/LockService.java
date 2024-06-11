@@ -28,10 +28,12 @@ public class LockService {
     }
 
     /*
-    * Must acquire entire locks for drawing Objects!
-    * */
-    public synchronized void removeAll() {
-        locks.clear();
+     * Must acquire entire locks for drawing Objects!
+     * */
+    public synchronized void clearLock() {
+        for (AtomicBoolean lock : locks) {
+            lock.set(false);
+        }
     }
 
 }

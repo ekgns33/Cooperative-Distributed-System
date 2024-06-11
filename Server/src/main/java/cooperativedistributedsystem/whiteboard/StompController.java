@@ -1,7 +1,5 @@
 package cooperativedistributedsystem.whiteboard;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.MessageHeaders;
@@ -12,6 +10,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class StompController {
     private final SimpMessageSendingOperations sendingOperations;
     private final LockService lockService;
     private final String destination = "/room";
-    private AtomicBoolean loadLock = new AtomicBoolean(false);
+    private final AtomicBoolean loadLock = new AtomicBoolean(false);
     private String loadUserSessionId = "";
 
     @MessageMapping("/pub")
@@ -35,17 +35,17 @@ public class StompController {
             sendingOperations.convertAndSend(destination, message);
         }
         else if (message.getStatus() == 3) {
-            log.info("message={}", message);
-            if(loadLock.get() && !sessionId.equals(loadUserSessionId)) {
+            log.info("Drawing!!. message={}", message);
+            if (loadLock.get() && !sessionId.equals(loadUserSessionId)) {
+                log.info("현재 load lock이 걸려있고, 현재 사용자는 load lock을 수행한 사용자가 아닙니다.");
                 return;
             }
             messageRepository.save(message);
             sendingOperations.convertAndSend(destination, message);
         }
         else if (message.getStatus() == 4) {
-            // send to '/room-user{sessionId}'
-            // ex) /room-user13r1sadf13fa
-            if(loadLock.get()) {
+            if (loadLock.get()) {
+                log.info("현재 load lock이 걸려있어, lock을 잡을 수 없습니다.");
                 return;
             }
             log.info("lock!!. message={}, sessionId={}", message, sessionId);
@@ -54,16 +54,18 @@ public class StompController {
             sendingOperations.convertAndSendToUser(sessionId, destination, message, headers);
         }
         else if (message.getStatus() == 5) {
-            if(loadLock.get()) {
+            if (loadLock.get()) {
+                log.info("현재 load lock이 걸려있어, unlock 할 수 없습니다.");
                 return;
             }
             log.info("unlock!!. message={}", message);
             lockService.unlock(message.getId());
         }
         else if (message.getStatus() == 6) {
-            if(!loadLock.compareAndSet(false, true)) {
+            MessageHeaders headers = createHeaders(sessionId);
+            if (!loadLock.compareAndSet(false, true)) {
+                log.info("현재 load lock이 걸려있어, clear를 수행할 수 없습니다.");
                 message.lockResult = false;
-                MessageHeaders headers = createHeaders(sessionId);
                 sendingOperations.convertAndSendToUser(sessionId, destination, message, headers);
                 return;
             }
@@ -71,7 +73,6 @@ public class StompController {
             log.info("clear page!!. message = {}", message);
             loadUserSessionId = sessionId;
 
-            MessageHeaders headers = createHeaders(sessionId);
             message.lockResult = true;
             sendingOperations.convertAndSendToUser(sessionId, destination, message, headers);
 
@@ -80,12 +81,11 @@ public class StompController {
             sendingOperations.convertAndSend(destination, message);
 
             messageRepository.deleteAll();
-            lockService.removeAll();
+            lockService.clearLock();
         }
-        else if (message.getStatus() == 7){
+        else if (message.getStatus() == 7) {
             log.info("client ready!!. message ={}", message);
             loadLock.set(false);
-            loadUserSessionId = "";
             sendingOperations.convertAndSend(destination, message);
         }
     }
