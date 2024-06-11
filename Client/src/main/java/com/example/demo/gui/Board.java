@@ -340,6 +340,13 @@ public class Board extends JFrame {
     }
 
     private void load() {
+        String filePath = "save.txt";
+        Path path = Paths.get(filePath);
+        if (!Files.exists(path)) {
+            System.out.println("[Log] File does not exist");
+            noticeLabel.setText("저장된 데이터가 존재하지 않습니다.");
+            return;
+        }
         try {
             synchronized (lock) {
                 int loadLockID = idGenerator.getID();
@@ -353,60 +360,55 @@ public class Board extends JFrame {
             noticeLabel.setText("로드 중 오류가 발생했습니다.");
             return;
         }
-        String filePath = "save.txt";
-        Path path = Paths.get(filePath);
 
-        if (Files.exists(path)) {
-            StompClient.send(Message.loadStart(idGenerator.getID()));
-            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    try {
-                        String[] words = line.split("_", 10);
-                        System.out.println(words.length);
-                        if (words.length == 10) {
-                            StompClient.send(Message.text(
-                                    3,
-                                    Long.parseLong(words[1]),
-                                    idGenerator.getID(),
-                                    Integer.parseInt(words[2]),
-                                    Integer.parseInt(words[3]),
-                                    Integer.parseInt(words[4]),
-                                    Integer.parseInt(words[5]),
-                                    Integer.parseInt(words[6]),
-                                    Integer.parseInt(words[7]),
-                                    Integer.parseInt(words[8]),
-                                    words[9]
-                            ));
-                        } else {
-                            StompClient.send(Message.figure(
-                                    Integer.parseInt(words[0]),
-                                    Long.parseLong(words[1]),
-                                    idGenerator.getID(),
-                                    Integer.parseInt(words[2]),
-                                    Integer.parseInt(words[3]),
-                                    Integer.parseInt(words[4]),
-                                    Integer.parseInt(words[5]),
-                                    Integer.parseInt(words[6]),
-                                    Integer.parseInt(words[7]),
-                                    Integer.parseInt(words[8])
-                            ));
-                        }
-                    } catch (Exception ignored) {
+
+        StompClient.send(Message.loadStart(idGenerator.getID()));
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                try {
+                    String[] words = line.split("_", 10);
+                    System.out.println(words.length);
+                    if (words.length == 10) {
+                        StompClient.send(Message.text(
+                                3,
+                                Long.parseLong(words[1]),
+                                idGenerator.getID(),
+                                Integer.parseInt(words[2]),
+                                Integer.parseInt(words[3]),
+                                Integer.parseInt(words[4]),
+                                Integer.parseInt(words[5]),
+                                Integer.parseInt(words[6]),
+                                Integer.parseInt(words[7]),
+                                Integer.parseInt(words[8]),
+                                words[9]
+                        ));
+                    } else {
+                        StompClient.send(Message.figure(
+                                Integer.parseInt(words[0]),
+                                Long.parseLong(words[1]),
+                                idGenerator.getID(),
+                                Integer.parseInt(words[2]),
+                                Integer.parseInt(words[3]),
+                                Integer.parseInt(words[4]),
+                                Integer.parseInt(words[5]),
+                                Integer.parseInt(words[6]),
+                                Integer.parseInt(words[7]),
+                                Integer.parseInt(words[8])
+                        ));
                     }
+                } catch (Exception ignored) {
                 }
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
             }
-
-            StompClient.send(Message.loadComplete());
-
-            System.out.println("[Log] Load complete");
-            noticeLabel.setText("불러오기가 완료되었습니다.");
-        } else {
-            System.out.println("[Log] File does not exist");
-            noticeLabel.setText("저장된 데이터가 존재하지 않습니다.");
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
         }
+
+        StompClient.send(Message.loadComplete());
+
+        System.out.println("[Log] Load complete");
+        noticeLabel.setText("불러오기가 완료되었습니다.");
+
     }
 
     private class SaveButtonListener implements ActionListener {
