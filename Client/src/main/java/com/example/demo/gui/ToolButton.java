@@ -162,6 +162,20 @@ public class ToolButton extends JButton {
             g2d.drawLine(getWidth() / 2, margin + 2 , getWidth() / 2, getHeight() - 16);
             g2d.drawLine(getWidth() / 2, margin + 2, getWidth() / 2 - 7, margin + 9);
             g2d.drawLine(getWidth() / 2, margin + 2, getWidth() / 2 + 7, margin + 9);
+        }else if(type == 9){
+            float fontSize = getHeight() - 16;
+            Font sizedFont = g2d.getFont().deriveFont(fontSize);
+            g2d.setFont(sizedFont);
+
+            FontMetrics metrics = g2d.getFontMetrics(sizedFont);
+            String text = "로그인";
+
+            int stringWidth = metrics.stringWidth(text);
+            int stringHeight = metrics.getHeight();
+
+            int x = (getWidth() - stringWidth) / 2;
+            int y = (getHeight() + stringHeight) / 2 - metrics.getDescent();
+            g2d.drawString(text, x, y);
         }
 
         g2d.dispose();

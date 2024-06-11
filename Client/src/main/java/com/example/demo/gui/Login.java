@@ -3,11 +3,14 @@ package com.example.demo.gui;
 import com.example.demo.stomp_client.StompClient;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
+import javax.tools.Tool;
 import java.awt.*;
 
 public class Login extends JFrame {
     private JTextField idField;
-    private JButton loginButton;
+    private ToolButton loginButton;
 
     public Login(String ip, int port) {
         try {
@@ -16,16 +19,18 @@ public class Login extends JFrame {
             e.printStackTrace();
         }
 
+        getContentPane().setBackground(Color.WHITE);
         setTitle("로그인");
-        setSize(300, 160);
+        setSize(244, 130);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
+
         idField = new JTextField(20);
-        loginButton = new JButton("로그인");
-        Dimension buttonSize = new Dimension(280, 30);
-        loginButton.setPreferredSize(buttonSize);
-        loginButton.setMaximumSize(buttonSize);
+        idField.setBorder(new MatteBorder(0, 0, 1, 0, new Color(0xcbcbcb)));
+
+        Dimension buttonSize = new Dimension(224, 30);
+        loginButton = new ToolButton(9, buttonSize);
 
         loginButton.addActionListener(e -> {
             if (Login.this.authenticate(ip, port)) {
@@ -40,19 +45,22 @@ public class Login extends JFrame {
 
         add(Box.createVerticalStrut(10));
         JPanel labelPanel = new JPanel();
+        labelPanel.setBackground(Color.WHITE);
         labelPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
         labelPanel.add(new JLabel("닉네임"));
         add(labelPanel);
         add(Box.createVerticalStrut(8));
 
         JPanel idFieldPanel = new JPanel();
-        idFieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        idFieldPanel.setBackground(Color.WHITE);
+        idFieldPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         idFieldPanel.add(idField);
         add(idFieldPanel);
 
         add(Box.createVerticalStrut(8));
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttonPanel.add(loginButton);
         add(buttonPanel);
