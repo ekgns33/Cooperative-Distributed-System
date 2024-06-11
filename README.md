@@ -1,8 +1,8 @@
 ## 👨‍👩‍👦 팀원 정보
 
-- [문다훈](https://github.com/ekgns33) 202011288, Server
-- [홍승택](https://github.com/redcarrot1) 201911294, Server
-- [황재상](https://github.com/jxx-sx) 201911297, Client
+- [문다훈](https://github.com/ekgns33), 202011288, Server
+- [홍승택](https://github.com/redcarrot1), 201911294, Server
+- [황재상](https://github.com/jxx-sx), 201911297, Client
 
 ## 🛠️ 구현환경
 
@@ -63,9 +63,23 @@
         ```
 
 ## ✉️ Message Architecture
-<img width="600" alt="Message Architecture" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/df2d9b46-06d3-445c-b26b-127b3ebdc3c5">
+<img width="600" alt="Message Architecture" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/da95beb1-ce0f-4db5-a83c-75fa6eeb027c">
 
-![login_sequence](https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/1d4dfadc-c28c-4832-b764-a4c2dcac8004)
+## 🔐 Object Lock
+<img width="300" alt="object lock sequence" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/6588fef9-1c77-4441-bd0f-d448e0085fe2">
+<br/>
+<img width="600" alt="mechanism" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/0424bf23-507f-4a08-bef9-097d151344dd">
+
+## 💾 Save and Load
+<img width="300" alt="Save and Load sequence" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/f6d7f9fe-396e-4706-b67c-6547f201715e">
+<br/>
+<img width="600" alt="step1" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/ebfa04fb-9fe3-4322-8d2f-be21311a5703">
+<br/>
+<img width="600" alt="step2" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/cf88a2f1-2887-4d66-a3e1-2ae71e460edf">
+<br/>
+<img width="600" alt="step3" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/a7fcc48c-7eed-40b7-a62b-54ca99a2f6b0">
+
 
 ## 📹 기능별 시연 영상 youtube 링크
-[협동분산시스템 2팀 중간 기능 시연 영상](https://youtu.be/4OCEsDhF3GI)
+[중간 기능 시연 영상](https://youtu.be/4OCEsDhF3GI) <br/>
+[기말 기능 시연 영상](https://www.youtube.com/watch?v=CPXYVDVkF8o)
