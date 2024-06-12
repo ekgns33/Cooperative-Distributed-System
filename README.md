@@ -24,7 +24,7 @@
         - Spring Data Redis
         - Lombok
         - it.ozimov:embedded-redis
-      
+    
 ## ⚙️ 컴파일 및 실행 방법
 
 - Client
@@ -37,16 +37,16 @@
         # project directory내에서 작성
         ./gradlew bootRun --args='--server.port={클라이언트가 실행될 포트번호}'
         ```
-        
+    
 - Server
     - Embedded Redis 사용
         - Default : server.port=8080
         
         ```bash
-        java -jar \
-        -Dspring.profiles.active="embedded" \
-        -Dserver.port="{value}" \
-        Server/whiteboard-1.0.jar
+        # Server directory내에서 작성
+        ./gradlew bootRun --args=\
+        '--spring.profiles.active=embedded '\
+        '--server.port={서버가 실행될 포트번호}'
         ```
         
     - Remote Redis 사용
@@ -54,12 +54,12 @@
         - Default : server.port=8080, redis.host=localhost, redis.port=6379, no password
         
         ```bash
-        java -jar \
-        -Dserver.port="{value}" \
-        -Dspring.data.redis.host="{value}" \
-        -Dspring.data.redis.port="{value}" \
-        -Dspring.data.redis.password="{value}" \
-        Server/whiteboard-1.0.jar
+        # Server directory내에서 작성
+        ./gradlew bootRun --args=\
+        '--server.port={서버가 실행될 포트번호} '\
+        '--spring.data.redis.host={value} '\
+        '--spring.data.redis.port={value} '\
+        '--spring.data.redis.password={value}'
         ```
 
 ## ✉️ Message Architecture
@@ -71,7 +71,7 @@
 <img width="600" alt="mechanism" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/0424bf23-507f-4a08-bef9-097d151344dd">
 
 ## 💾 Save and Load
-<img width="300" alt="Save and Load sequence" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/f6d7f9fe-396e-4706-b67c-6547f201715e">
+<img width="300" alt="Save and Load sequence" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/d9795334-de7f-47ad-ac07-29f98dedb3e3">
 <br/>
 <img width="600" alt="step1" src="https://github.com/ekgns33/Cooperative-Distributed-System/assets/51076814/ebfa04fb-9fe3-4322-8d2f-be21311a5703">
 <br/>
